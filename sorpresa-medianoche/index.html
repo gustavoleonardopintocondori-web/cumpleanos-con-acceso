@@ -84,6 +84,14 @@
     .wish-signature{margin-top:23px;color:var(--rose);font-family:Georgia,"Times New Roman",serif;font-size:1.16rem;font-style:italic}
     .wish-signature span{font-style:normal}
     footer{text-align:center;color:var(--muted);font-family:Georgia,serif;font-style:italic;margin-top:42px}
+    /* Cada ventana deja ver un paisaje suave en movimiento. */
+    .video-manager,.note,.premiere,.video-card,.locked-video{background-size:220% 220%;animation:window-landscape 28s ease-in-out infinite alternate}
+    .video-manager{background-image:radial-gradient(ellipse at 18% 8%,#b878a544,transparent 48%),radial-gradient(ellipse at 86% 100%,#638e8450,transparent 52%),linear-gradient(145deg,#38243fee,#211a2deF)}
+    .note{background-image:radial-gradient(ellipse at 82% 10%,#b878a544,transparent 48%),radial-gradient(ellipse at 12% 100%,#638e8450,transparent 52%),linear-gradient(145deg,#38243fee,#211a2def)}
+    .premiere{background-image:radial-gradient(ellipse at 50% 0,#b878a566,transparent 58%),radial-gradient(ellipse at 85% 100%,#638e8450,transparent 55%),linear-gradient(145deg,#392543f2,#211a2def)}
+    .video-card{background-image:radial-gradient(ellipse at 20% 0,#98638c44,transparent 60%),linear-gradient(155deg,#302039,#201a2b)}
+    .locked-video{background-image:radial-gradient(ellipse at 50% 30%,#a16ba866,transparent 60%),radial-gradient(ellipse at 90% 100%,#638e8466,transparent 52%),linear-gradient(145deg,#392543,#211a2b)}
+    @keyframes window-landscape{to{background-position:100% 65%}}
     @keyframes pulse{50%{transform:scale(1.18);text-shadow:0 0 28px #ff75b0}}
     @keyframes stars-twinkle{to{opacity:.55;transform:translateY(-4px)}}
     @keyframes aurora-drift{to{transform:translate(7%,8%) rotate(4deg);opacity:.4}}
@@ -202,7 +210,7 @@
   <script>
     (() => {
       const accessUser = 'mi cielo';
-      const accessPassword = 'solo mi niña';
+      const accessPassword = 'mi niña';
       const accessGate = document.getElementById('accessGate');
       const pageContent = document.getElementById('pageContent');
       const accessForm = document.getElementById('accessForm');
