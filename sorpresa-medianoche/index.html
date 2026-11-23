@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#211628">
+  <title>Para ti, a las doce ♡</title>
+  <style>
+    :root{color-scheme:dark;--bg:#211628;--panel:#302039;--rose:#ff9fc5;--cream:#fff4f8;--muted:#e2cbd8;--line:#65455c}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;color:var(--cream);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 50% 0%,#573453 0,transparent 45%),linear-gradient(160deg,#211628,#321d35 55%,#24182c);}
+    [hidden]{display:none!important}
+    .wrap{width:min(1040px,100% - 32px);margin:auto;padding:28px 0 64px}
+    .access-screen{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:22px;background:radial-gradient(ellipse at 50% 5%,#75456e 0,transparent 48%),linear-gradient(155deg,#1d1523,#36213b 62%,#211628);overflow:auto}
+    .access-card{width:min(100%,440px);padding:clamp(25px,6vw,42px);border:1px solid #9a688c;border-radius:28px;background:linear-gradient(150deg,#3a2742ed,#251b2eF2);box-shadow:0 30px 90px #100b17a8;text-align:center}
+    .access-heart{font-size:2.3rem;color:var(--rose);text-shadow:0 0 25px #ff9fc577;margin-bottom:8px}
+    .access-card h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(2rem,8vw,2.7rem);line-height:1.08;margin:10px 0 12px}
+    .access-card h1 em{color:var(--rose);font-style:italic}
+    .access-copy{color:var(--muted);line-height:1.65;margin:0 0 24px}
+    .access-field{display:block;text-align:left;margin:14px 0;color:var(--rose);font-size:.88rem;font-weight:750}
+    .access-field input{display:block;width:100%;margin-top:7px;padding:13px 14px;border:1px solid #765373;border-radius:13px;background:#1c1523;color:var(--cream);font:inherit;outline:none}
+    .access-field input:focus{border-color:var(--rose);box-shadow:0 0 0 3px #ff9fc52b}
+    .access-submit{width:100%;margin-top:8px;padding:14px;border:0;border-radius:14px;background:var(--rose);color:#321b2c;font:inherit;font-weight:850;cursor:pointer}
+    .access-error{margin:14px 0 0;color:#ffc1d9;font-size:.9rem}
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0 52px}
+    .brand{font-size:.76rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--rose)}
+    .pill{border:1px solid var(--line);border-radius:999px;padding:9px 14px;color:var(--muted);font-size:.84rem}
+    .hero{text-align:center;padding:12px 10px 48px}
+    .eyebrow{color:var(--rose);letter-spacing:.22em;text-transform:uppercase;font-size:.76rem;font-weight:800}
+    h1,h2{font-family:Georgia,"Times New Roman",serif;font-weight:500}
+    h1{font-size:clamp(2.8rem,8vw,5.8rem);line-height:.99;margin:18px auto;max-width:850px}
+    h1 em{color:var(--rose);font-weight:400}
+    .intro{max-width:640px;margin:0 auto;color:var(--muted);font-size:1.08rem;line-height:1.8}
+    .heart{font-size:2rem;color:var(--rose);margin-top:22px;animation:pulse 1.5s infinite}
+    .video-manager{padding:24px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,rgba(255,159,197,.12),rgba(255,255,255,.025));box-shadow:0 20px 55px #100b1680}
+    .manager-head{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+    .manager-head h2{font-size:clamp(1.7rem,4vw,2.3rem);margin:5px 0}
+    .manager-head p{margin:0;color:var(--muted);line-height:1.6}
+    .add-button,.delete-button{border:0;border-radius:999px;padding:12px 18px;font:inherit;font-weight:800;cursor:pointer}
+    .add-button{color:#321b2c;background:var(--rose);box-shadow:0 7px 22px #ff9fc533}
+    .delete-button{color:#ffe1eb;background:#71334f;border:1px solid #b86789;padding:9px 14px}
+    .add-button:hover,.delete-button:hover{filter:brightness(1.08)}
+    .video-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-top:22px}
+    .video-card{overflow:hidden;border:1px solid var(--line);border-radius:20px;background:#211728}
+    .video-card video{display:block;width:100%;max-height:520px;aspect-ratio:16/9;background:#110d14;object-fit:contain}
+    .video-info{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 15px}
+    .video-name{min-width:0;overflow-wrap:anywhere;color:var(--cream);font-size:.95rem}
+    .video-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .feature-button{border:1px solid #865971;border-radius:999px;background:#432747;color:#ffe2ef;padding:9px 12px;font:inherit;font-size:.83rem;font-weight:750;cursor:pointer}
+    .empty-state{margin-top:20px;padding:24px;border:1px dashed #865971;border-radius:18px;text-align:center;color:var(--muted);line-height:1.7}
+    .save-note{margin-top:15px;color:#cbb4c5;font-size:.86rem;line-height:1.6}
+    .premiere{margin-top:20px;padding:22px;border:1px solid #b86789;border-radius:20px;background:radial-gradient(circle at 50% 0,#54304f,#271b30 76%);text-align:center}
+    .premiere h3{font-family:Georgia,serif;font-size:1.65rem;font-weight:500;margin:4px 0 8px}
+    .premiere p{margin:0;color:var(--muted);line-height:1.6}
+    .premiere video{display:block;width:min(100%,720px);max-height:70vh;margin:18px auto 0;border-radius:16px;background:#110d14}
+    .premiere[hidden]{display:none}
+    .premiere-action{margin-top:15px;border:0;border-radius:999px;padding:12px 20px;background:var(--rose);color:#321b2c;font:inherit;font-weight:800;cursor:pointer}
+    .prelude{border-color:#80608a;background:radial-gradient(circle at 50% 0,#44304e,#251a2e 76%)}
+    .locked-video{display:grid;place-items:center;min-height:300px;width:min(100%,720px);margin:18px auto 0;padding:28px;border:1px solid #906b99;border-radius:18px;background:radial-gradient(circle at 50% 35%,#62456c,#382943 48%,#1c1724 100%);box-shadow:inset 0 0 55px #160f1e;text-align:center}
+    .locked-video .lock{display:grid;place-items:center;width:76px;height:76px;margin:0 auto 14px;border:1px solid #d7a7cc;border-radius:50%;background:#ffffff0d;color:#ffe3f3;font-size:2rem;box-shadow:0 0 30px #df9ad433}
+    .locked-video strong{display:block;color:var(--cream);font-family:Georgia,serif;font-size:1.45rem;font-weight:500}
+    .locked-video p{margin:8px 0 0;color:var(--muted)}
+    .locked-video button{margin-top:18px;border:1px solid #a17b9c;border-radius:999px;padding:10px 16px;background:#251b2e;color:#ffe5f1;font:inherit;font-weight:750;cursor:pointer}
+    .midnight-videos{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-top:20px}
+    .midnight-videos .premiere{margin-top:0;padding:18px}
+    .note{position:relative;isolation:isolate;overflow:hidden;max-width:880px;margin:26px auto 0;padding:clamp(26px,6vw,54px);border:1px solid #93617f;border-radius:28px;background:radial-gradient(ellipse at 50% 0%,#71446777,transparent 58%),linear-gradient(145deg,#35223d,#271a31 72%);text-align:center;color:var(--muted);line-height:1.95;box-shadow:0 24px 70px #10091470}
+    .note::before,.note::after{position:absolute;z-index:-1;color:#ff9fc51a;font-family:Georgia,serif;line-height:1}
+    .note::before{content:"✧";font-size:8rem;top:-14px;left:18px;transform:rotate(-14deg)}
+    .note::after{content:"♡";font-size:9rem;right:18px;bottom:-35px;transform:rotate(12deg)}
+    .wish-kicker{margin:0;color:var(--rose);font-size:.72rem;font-weight:850;letter-spacing:.22em;text-transform:uppercase}
+    .note h2{max-width:680px;margin:14px auto 22px;color:var(--cream);font-size:clamp(1.9rem,5vw,3rem);line-height:1.12}
+    .wish-copy{max-width:700px;margin:0 auto;font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.04rem,2vw,1.22rem);font-style:italic}
+    .wish-copy p{margin:0 0 16px}
+    .wish-signature{margin-top:23px;color:var(--rose);font-family:Georgia,"Times New Roman",serif;font-size:1.16rem;font-style:italic}
+    .wish-signature span{font-style:normal}
+    footer{text-align:center;color:var(--muted);font-family:Georgia,serif;font-style:italic;margin-top:42px}
+    @keyframes pulse{50%{transform:scale(1.18);text-shadow:0 0 28px #ff75b0}}
+    @media(max-width:680px){.wrap{width:min(100% - 22px,520px);padding-top:18px}header{padding-bottom:35px}.video-manager{padding:17px}.video-card{min-height:0}.hero{padding-bottom:34px}.manager-head .add-button{width:100%}}
+  </style>
+</head>
+<body>
+  <section class="access-screen" id="accessGate" aria-labelledby="accessTitle">
+    <form class="access-card" id="accessForm">
+      <div class="access-heart" aria-hidden="true">♡</div>
+      <div class="eyebrow">Un regalo hecho con amor</div>
+      <h1 id="accessTitle">Una sorpresa<br><em>solo para ti</em></h1>
+      <p class="access-copy">Ingresa tus datos para abrir este pequeño regalo de cumpleaños. ♡</p>
+      <label class="access-field" for="accessUser">Usuario
+        <input id="accessUser" name="username" type="text" autocomplete="username" required>
+      </label>
+      <label class="access-field" for="accessPassword">Contraseña
+        <input id="accessPassword" name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <button class="access-submit" type="submit">Entrar a mi sorpresa ♡</button>
+      <p class="access-error" id="accessError" role="alert" hidden>El usuario o la contraseña no son correctos. Inténtalo otra vez.</p>
+    </form>
+  </section>
+  <main class="wrap" id="pageContent" hidden>
+    <header><div class="brand">Un regalo hecho con amor</div><div class="pill">Para abrir a las 00:00 ♡</div></header>
+    <section class="hero">
+      <div class="eyebrow">Hoy comienza un día especial</div>
+      <h1>Feliz cumpleaños,<br><em>mi niña hermosa</em></h1>
+      <p class="intro">Quería ser de las primeras personas en felicitarte. Preparé este pequeño rincón con mucho amor, para celebrar tu vida y todos los recuerdos bonitos que todavía nos esperan.</p>
+      <div class="heart" aria-hidden="true">♡</div>
+    </section>
+    <section class="video-manager" aria-labelledby="video-title">
+      <div class="manager-head">
+        <div><div class="eyebrow">Tus recuerdos en video</div><h2 id="video-title">Videos de cumpleaños</h2><p>Añade los videos de anime que quieras mostrarle a las doce.</p></div>
+        <button class="add-button" id="addVideos" type="button">＋ Añadir videos</button>
+        <input id="videoFiles" type="file" accept="video/*" multiple hidden>
+      </div>
+      <div class="empty-state" id="emptyState">Todavía no añadiste videos. Pulsa <strong>Añadir videos</strong> para elegirlos.</div>
+      <div class="video-list" id="videoList" aria-live="polite"></div>
+      <section class="premiere prelude" id="prelude" aria-live="polite">
+        <div class="eyebrow">El comienzo de la sorpresa</div>
+        <h3 id="preludeTitle">Video sorpresa bloqueado</h3>
+        <p id="preludeMessage">Se desbloquea el martes 24 de noviembre a las 23:59:50 (hora de La Paz).</p>
+        <div id="preludePlayer">
+          <div class="locked-video" id="lockedVideo">
+            <div><div class="lock" aria-hidden="true">🔒</div><strong>Una sorpresa está esperando</strong><p id="lockedInfo">Este video sigue cerrado por ahora.</p><button id="lockedHint" type="button">Ver hora de desbloqueo</button></div>
+          </div>
+        </div>
+      </section>
+      <section class="premiere prelude" id="eveningPremiere" aria-live="polite">
+        <div class="eyebrow">Una sorpresa para más tarde</div>
+        <h3 id="eveningTitle">Segundo video reservado</h3>
+        <p id="eveningMessage">Este video estará disponible el miércoles 25 de noviembre a las 20:00 (hora de La Paz).</p>
+        <div id="eveningPlayer">
+          <div class="locked-video" id="eveningLockedVideo">
+            <div><div class="lock" aria-hidden="true">🔒</div><strong>Otro recuerdo te espera</strong><p id="eveningLockInfo">Todavía falta un poquito.</p><button id="eveningLockedHint" type="button">Ver hora de estreno</button></div>
+          </div>
+        </div>
+      </section>
+      <section class="premiere prelude" id="eveningPremiereTwo" aria-live="polite">
+        <div class="eyebrow">Otro recuerdo para las ocho</div>
+        <h3 id="eveningTwoTitle">También reservado para las 20:00</h3>
+        <p id="eveningTwoMessage">Este video estará disponible el miércoles 25 de noviembre a las 20:00 (hora de La Paz).</p>
+        <div id="eveningTwoPlayer">
+          <div class="locked-video" id="eveningTwoLockedVideo">
+            <div><div class="lock" aria-hidden="true">🔒</div><strong>Este recuerdo sigue cerrado</strong><p id="eveningTwoLockInfo">Se abrirá junto al otro video.</p><button id="eveningTwoLockedHint" type="button">Ver hora de estreno</button></div>
+          </div>
+        </div>
+      </section>
+      <div class="midnight-videos" aria-label="Videos que se desbloquean a medianoche">
+        <section class="premiere prelude" aria-live="polite">
+          <div class="eyebrow">Un recuerdo para medianoche</div><h3>Video especial 1</h3>
+          <p id="midnightOneMessage">Se desbloquea el miércoles 25 a las 00:00 (hora de La Paz).</p>
+          <div id="midnightOnePlayer"><div class="locked-video" id="midnightOneLocked"><div><div class="lock" aria-hidden="true">🔒</div><strong>Video bloqueado</strong><p id="midnightOneLockInfo">La sorpresa se abrirá a medianoche.</p><button id="midnightOneHint" type="button">Ver hora de desbloqueo</button></div></div></div>
+        </section>
+        <section class="premiere prelude" aria-live="polite">
+          <div class="eyebrow">Un recuerdo para medianoche</div><h3>Video especial 2</h3>
+          <p id="midnightTwoMessage">Se desbloquea el miércoles 25 a las 00:00 (hora de La Paz).</p>
+          <div id="midnightTwoPlayer"><div class="locked-video" id="midnightTwoLocked"><div><div class="lock" aria-hidden="true">🔒</div><strong>Video bloqueado</strong><p id="midnightTwoLockInfo">La sorpresa se abrirá a medianoche.</p><button id="midnightTwoHint" type="button">Ver hora de desbloqueo</button></div></div></div>
+        </section>
+        <section class="premiere prelude" aria-live="polite">
+          <div class="eyebrow">Un recuerdo para medianoche</div><h3>Video especial 3</h3>
+          <p id="midnightThreeMessage">Se desbloquea el miércoles 25 a las 00:00 (hora de La Paz).</p>
+          <div id="midnightThreePlayer"><div class="locked-video" id="midnightThreeLocked"><div><div class="lock" aria-hidden="true">🔒</div><strong>Video bloqueado</strong><p id="midnightThreeLockInfo">La sorpresa se abrirá a medianoche.</p><button id="midnightThreeHint" type="button">Ver hora de desbloqueo</button></div></div></div>
+        </section>
+      </div>
+      <section class="premiere" id="premiere" aria-live="polite">
+        <div class="eyebrow">Tu video sorpresa</div>
+        <h3 id="premiereTitle">Estreno de cumpleaños</h3>
+        <p id="premiereMessage">Añade un video y elige «Reservar para medianoche». Se abrirá el miércoles 25 de noviembre a las 00:00.</p>
+        <div id="premierePlayer"></div>
+      </section>
+      <p class="save-note" id="saveNote">Los videos que añadas se guardan en este navegador y seguirán aquí al volver a abrir esta página.</p>
+    </section>
+    <section class="note" aria-labelledby="wish-title">
+      <p class="wish-kicker">Un deseo que nace a medianoche</p>
+      <h2 id="wish-title">Que la vida te devuelva toda la luz que regalas</h2>
+      <div class="wish-copy">
+        <p>Mi niña hermosa, cuando el reloj marque las doce comenzará tu día especial, y mi primer deseo será que sientas cuánto te quiero. Hoy celebro el día en que llegaste al mundo y la suerte inmensa de compartir contigo tantos pedacitos de vida.</p>
+        <p>Que este nuevo año te encuentre rodeada de cariño, te acerque a tus sueños y te regale mañanas llenas de esperanza. Que nunca te falten razones para sonreír, abrazos que se sientan como hogar y estrellas que te recuerden lo maravillosa que eres.</p>
+        <p>Y cuando el cielo se nuble, recuerda que hasta en la noche más oscura hay luces que siguen brillando. Yo estaré aquí, celebrando cada uno de tus pasos y queriéndote en cada estación.</p>
+        <p>Feliz cumpleaños, mi amor. Ojalá la vida te devuelva, multiplicado, todo lo bonito que haces sentir. ♡</p>
+      </div>
+      <div class="wish-signature">Con todo mi amor, siempre <span>♡</span></div>
+    </section>
+    <footer>Con todo mi amor, para ti ♡</footer>
+  </main>
+  <script>
+    (() => {
+      const accessUser = 'mi cielo';
+      const accessPassword = 'feliz cumpleaños mi niña';
+      const accessGate = document.getElementById('accessGate');
+      const pageContent = document.getElementById('pageContent');
+      const accessForm = document.getElementById('accessForm');
+      const accessError = document.getElementById('accessError');
+      let pageAuthenticated = sessionStorage.getItem('sorpresa-medianoche-auth') === 'ok';
+      let appInitialized = false;
+      let appStarted = false;
+      function showPage() {
+        accessGate.hidden = true;
+        pageContent.hidden = false;
+        pageAuthenticated = true;
+        if (appInitialized) startApp();
+      }
+      if (pageAuthenticated) showPage();
+      accessForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const enteredUser = document.getElementById('accessUser').value.trim().toLocaleLowerCase('es');
+        const enteredPassword = document.getElementById('accessPassword').value.trim().normalize('NFC');
+        if (enteredUser === accessUser && enteredPassword === accessPassword.normalize('NFC')) {
+          sessionStorage.setItem('sorpresa-medianoche-auth', 'ok');
+          accessError.hidden = true;
+          showPage();
+        } else {
+          accessError.hidden = false;
+          document.getElementById('accessPassword').value = '';
+          document.getElementById('accessPassword').focus();
+        }
+      });
+
+      const dbName = 'sorpresa-medianoche-videos-v1';
+      const addButton = document.getElementById('addVideos');
+      const fileInput = document.getElementById('videoFiles');
+      const list = document.getElementById('videoList');
+      const empty = document.getElementById('emptyState');
+      const note = document.getElementById('saveNote');
+      const premiere = document.getElementById('premiere');
+      const premiereTitle = document.getElementById('premiereTitle');
+      const premiereMessage = document.getElementById('premiereMessage');
+      const premierePlayer = document.getElementById('premierePlayer');
+      const preludeTitle = document.getElementById('preludeTitle');
+      const preludeMessage = document.getElementById('preludeMessage');
+      const preludePlayer = document.getElementById('preludePlayer');
+      const lockedVideo = document.getElementById('lockedVideo');
+      const lockedHint = document.getElementById('lockedHint');
+      const lockedInfo = document.getElementById('lockedInfo');
+      const eveningTitle = document.getElementById('eveningTitle');
+      const eveningMessage = document.getElementById('eveningMessage');
+      const eveningPlayer = document.getElementById('eveningPlayer');
+      const eveningLockedVideo = document.getElementById('eveningLockedVideo');
+      const eveningLockedHint = document.getElementById('eveningLockedHint');
+      const eveningLockInfo = document.getElementById('eveningLockInfo');
+      const eveningTwoTitle = document.getElementById('eveningTwoTitle');
+      const eveningTwoMessage = document.getElementById('eveningTwoMessage');
+      const eveningTwoPlayer = document.getElementById('eveningTwoPlayer');
+      const eveningTwoLockedVideo = document.getElementById('eveningTwoLockedVideo');
+      const eveningTwoLockedHint = document.getElementById('eveningTwoLockedHint');
+      const eveningTwoLockInfo = document.getElementById('eveningTwoLockInfo');
+      const midnightSlots = [
+        { message: document.getElementById('midnightOneMessage'), player: document.getElementById('midnightOnePlayer'), locked: document.getElementById('midnightOneLocked'), lockInfo: document.getElementById('midnightOneLockInfo'), hint: document.getElementById('midnightOneHint'), file: 'videos/video-midnight-1.mp4', title: 'video-midnight-1' },
+        { message: document.getElementById('midnightTwoMessage'), player: document.getElementById('midnightTwoPlayer'), locked: document.getElementById('midnightTwoLocked'), lockInfo: document.getElementById('midnightTwoLockInfo'), hint: document.getElementById('midnightTwoHint'), file: 'videos/video-midnight-2.mp4', title: 'video-midnight-2' },
+        { message: document.getElementById('midnightThreeMessage'), player: document.getElementById('midnightThreePlayer'), locked: document.getElementById('midnightThreeLocked'), lockInfo: document.getElementById('midnightThreeLockInfo'), hint: document.getElementById('midnightThreeHint'), file: 'videos/video-midnight-3.mp4', title: 'video-midnight-3' }
+      ];
+      const midnightReady = new Set();
+      for (const slot of midnightSlots) {
+        slot.hint.addEventListener('click', () => {
+          slot.lockInfo.textContent = 'Se podrá reproducir el miércoles 25 de noviembre a las 00:00 (hora de La Paz). ♡';
+        });
+      }
+      const listUrls = new Set();
+      let premiereUrl = null;
+      const featuredKey = 'sorpresa-medianoche-featured-video-v1';
+      const preludeAt = new Date('2026-11-24T23:59:50-04:00');
+      const unlockAt = new Date('2026-11-25T00:00:00-04:00');
+      const eveningAt = new Date('2026-11-25T20:00:00-04:00');
+      let premiereVideoId = null;
+      let preludeVideoId = null;
+      let eveningVideoReady = false;
+      let eveningTwoVideoReady = false;
+
+      function openDatabase() {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open(dbName, 1);
+          request.onupgradeneeded = () => request.result.createObjectStore('videos', { keyPath: 'id' });
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      async function withStore(mode, action) {
+        const db = await openDatabase();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction('videos', mode);
+          const store = tx.objectStore('videos');
+          const request = action(store);
+          tx.oncomplete = () => { db.close(); resolve(request?.result); };
+          tx.onerror = () => { db.close(); reject(tx.error); };
+          tx.onabort = () => { db.close(); reject(tx.error || new Error('No se pudo guardar.')); };
+        });
+      }
+
+      async function renderVideos() {
+        try {
+          const videos = await withStore('readonly', store => store.getAll());
+          for (const url of listUrls) URL.revokeObjectURL(url);
+          listUrls.clear();
+          list.replaceChildren();
+          let shown = 0;
+          const featuredId = localStorage.getItem(featuredKey);
+          for (const item of videos.sort((a, b) => a.addedAt - b.addedAt)) {
+            if (String(item.id) === featuredId && Date.now() < unlockAt.getTime()) continue;
+            shown++;
+            const card = document.createElement('article');
+            card.className = 'video-card';
+            const player = document.createElement('video');
+            player.controls = true;
+            player.playsInline = true;
+            player.preload = 'metadata';
+            const url = URL.createObjectURL(item.file);
+            listUrls.add(url);
+            player.src = url;
+            const info = document.createElement('div');
+            info.className = 'video-info';
+            const name = document.createElement('span');
+            name.className = 'video-name';
+            name.textContent = item.name;
+            const actions = document.createElement('div');
+            actions.className = 'video-actions';
+            const feature = document.createElement('button');
+            feature.className = 'feature-button';
+            feature.type = 'button';
+            feature.textContent = String(item.id) === featuredId ? 'Quitar estreno' : 'Reservar para medianoche';
+            feature.addEventListener('click', async () => {
+              if (String(item.id) === localStorage.getItem(featuredKey)) localStorage.removeItem(featuredKey);
+              else {
+                localStorage.setItem(featuredKey, String(item.id));
+              }
+              await renderVideos();
+              await updatePremiere();
+            });
+            const remove = document.createElement('button');
+            remove.className = 'delete-button';
+            remove.type = 'button';
+            remove.textContent = 'Borrar';
+            remove.setAttribute('aria-label', 'Borrar ' + item.name);
+            remove.addEventListener('click', async () => {
+              try {
+                await withStore('readwrite', store => store.delete(item.id));
+                if (String(item.id) === localStorage.getItem(featuredKey)) localStorage.removeItem(featuredKey);
+                note.textContent = 'Video borrado. Los demás siguen guardados.';
+                await renderVideos();
+                await updatePremiere();
+              } catch {
+                note.textContent = 'No se pudo borrar el video. Inténtalo otra vez.';
+              }
+            });
+            actions.append(feature, remove);
+            info.append(name, actions);
+            card.append(player, info);
+            list.append(card);
+          }
+          empty.hidden = shown > 0;
+          empty.textContent = videos.length && !shown
+            ? 'Tus videos reservados se mostrarán a la hora elegida. Puedes añadir otros mientras esperas.'
+            : 'Todavía no añadiste videos. Pulsa Añadir videos para elegirlos.';
+          if (videos.length) note.textContent = `${videos.length} video${videos.length === 1 ? '' : 's'} guardado${videos.length === 1 ? '' : 's'} en este navegador. Puedes reservar uno para el estreno de medianoche.`;
+          await updatePrelude();
+          await updateEvening();
+          await updateEveningTwo();
+          await updateMidnightVideos();
+          await updatePremiere();
+        } catch {
+          addButton.disabled = true;
+          note.textContent = 'Este navegador no permite guardar videos en esta página. Ábrela en Chrome o Edge para añadirlos.';
+        }
+      }
+
+      async function updatePrelude() {
+        const now = Date.now();
+        preludeTitle.textContent = 'Un video reservado para ti ♡';
+        if (now < preludeAt.getTime()) {
+          preludeVideoId = null;
+          const remain = preludeAt.getTime() - now;
+          const hours = Math.floor(remain / 3600000);
+          const minutes = Math.floor((remain % 3600000) / 60000);
+          const seconds = Math.floor((remain % 60000) / 1000);
+          preludeMessage.textContent = `Este video permanecerá oculto hasta el martes 24 de noviembre a las 23:59:50 (hora de La Paz). Faltan ${hours} h ${minutes} min ${seconds} s.`;
+          if (!preludePlayer.contains(lockedVideo)) preludePlayer.replaceChildren(lockedVideo);
+          return;
+        }
+        if (preludeVideoId === 'video-235950') return;
+        preludeVideoId = 'video-235950';
+        preludeMessage.textContent = 'Llegó el momento ♡ Este video se reproducirá ahora.';
+        const player = document.createElement('video');
+        player.controls = true;
+        player.playsInline = true;
+        player.preload = 'auto';
+        player.src = 'videos/video-235950.mp4';
+        const play = document.createElement('button');
+        play.className = 'premiere-action';
+        play.type = 'button';
+        play.textContent = '▶ Reproducir el video';
+        play.addEventListener('click', () => player.play());
+        preludePlayer.replaceChildren(player, play);
+        player.play().then(() => { play.hidden = true; }).catch(() => { play.hidden = false; });
+      }
+
+      lockedHint.addEventListener('click', () => {
+        lockedInfo.textContent = 'Se podrá reproducir el martes 24 de noviembre a las 23:59:50 (hora de La Paz). ♡';
+      });
+
+      async function updateEvening() {
+        const now = Date.now();
+        eveningTitle.textContent = 'Un recuerdo para las ocho ♡';
+        if (now < eveningAt.getTime()) {
+          eveningVideoReady = false;
+          const remaining = eveningAt.getTime() - now;
+          const days = Math.floor(remaining / 86400000);
+          const hours = Math.floor((remaining % 86400000) / 3600000);
+          const minutes = Math.floor((remaining % 3600000) / 60000);
+          const seconds = Math.floor((remaining % 60000) / 1000);
+          eveningMessage.textContent = `Este video se podrá ver el miércoles 25 de noviembre a las 20:00 (hora de La Paz). Faltan ${days} d ${hours} h ${minutes} min ${seconds} s.`;
+          if (!eveningPlayer.contains(eveningLockedVideo)) eveningPlayer.replaceChildren(eveningLockedVideo);
+          return;
+        }
+        if (eveningVideoReady) return;
+        eveningVideoReady = true;
+        eveningMessage.textContent = 'Ya puedes ver este video especial. ♡';
+        const player = document.createElement('video');
+        player.controls = true;
+        player.playsInline = true;
+        player.preload = 'metadata';
+        player.src = 'videos/video-2000.mp4';
+        eveningPlayer.replaceChildren(player);
+      }
+
+      eveningLockedHint.addEventListener('click', () => {
+        eveningLockInfo.textContent = 'Se podrá reproducir el miércoles 25 de noviembre a las 20:00 (hora de La Paz). ♡';
+      });
+
+      async function updateEveningTwo() {
+        const now = Date.now();
+        eveningTwoTitle.textContent = 'Un segundo recuerdo para las ocho ♡';
+        if (now < eveningAt.getTime()) {
+          eveningTwoVideoReady = false;
+          const remaining = eveningAt.getTime() - now;
+          const days = Math.floor(remaining / 86400000);
+          const hours = Math.floor((remaining % 86400000) / 3600000);
+          const minutes = Math.floor((remaining % 3600000) / 60000);
+          const seconds = Math.floor((remaining % 60000) / 1000);
+          eveningTwoMessage.textContent = `Este otro video también se abrirá el miércoles 25 de noviembre a las 20:00 (hora de La Paz). Faltan ${days} d ${hours} h ${minutes} min ${seconds} s.`;
+          if (!eveningTwoPlayer.contains(eveningTwoLockedVideo)) eveningTwoPlayer.replaceChildren(eveningTwoLockedVideo);
+          return;
+        }
+        if (eveningTwoVideoReady) return;
+        eveningTwoVideoReady = true;
+        eveningTwoMessage.textContent = 'Ya puedes ver este segundo video especial. ♡';
+        const player = document.createElement('video');
+        player.controls = true;
+        player.playsInline = true;
+        player.preload = 'metadata';
+        player.src = 'videos/video-2000-2.mp4';
+        eveningTwoPlayer.replaceChildren(player);
+      }
+
+      eveningTwoLockedHint.addEventListener('click', () => {
+        eveningTwoLockInfo.textContent = 'Este segundo video se podrá reproducir el miércoles 25 a las 20:00 (hora de La Paz). ♡';
+      });
+
+      function updateMidnightVideos() {
+        const now = Date.now();
+        for (const slot of midnightSlots) {
+          if (now < unlockAt.getTime()) {
+            const remaining = unlockAt.getTime() - now;
+            const hours = Math.floor(remaining / 3600000);
+            const minutes = Math.floor((remaining % 3600000) / 60000);
+            const seconds = Math.floor((remaining % 60000) / 1000);
+            slot.message.textContent = `Se desbloquea el miércoles 25 de noviembre a las 00:00 (hora de La Paz). Faltan ${hours} h ${minutes} min ${seconds} s.`;
+            if (!slot.player.contains(slot.locked)) slot.player.replaceChildren(slot.locked);
+            continue;
+          }
+          if (midnightReady.has(slot.title)) continue;
+          midnightReady.add(slot.title);
+          slot.message.textContent = 'Ya puedes reproducir este video. ♡';
+          const video = document.createElement('video');
+          video.controls = true;
+          video.playsInline = true;
+          video.preload = 'metadata';
+          video.src = slot.file;
+          slot.player.replaceChildren(video);
+        }
+      }
+
+      async function updatePremiere() {
+        const featuredId = localStorage.getItem(featuredKey);
+        if (!featuredId) {
+          if (premiereUrl) URL.revokeObjectURL(premiereUrl);
+          premiereUrl = null;
+          premiereVideoId = null;
+          premiere.hidden = false;
+          premiereTitle.textContent = 'Estreno de cumpleaños';
+          premiereMessage.textContent = 'Añade un video y elige «Reservar para medianoche». Se abrirá el miércoles 25 de noviembre a las 00:00.';
+          premierePlayer.replaceChildren();
+          return;
+        }
+        const item = await withStore('readonly', store => store.get(featuredId));
+        if (!item) {
+          localStorage.removeItem(featuredKey);
+          return updatePremiere();
+        }
+        premiere.hidden = false;
+        premiereTitle.textContent = 'Una sorpresa para ti ♡';
+        premierePlayer.replaceChildren();
+        if (Date.now() < unlockAt.getTime()) {
+          premiereVideoId = null;
+          const remaining = unlockAt.getTime() - Date.now();
+          const hours = Math.floor(remaining / 3600000);
+          const minutes = Math.floor((remaining % 3600000) / 60000);
+          const seconds = Math.floor((remaining % 60000) / 1000);
+          premiereMessage.textContent = `«${item.name}» se abrirá el miércoles 25 de noviembre a las 00:00 (hora de La Paz). Faltan ${hours} h ${minutes} min ${seconds} s.`;
+          return;
+        }
+        if (premiereVideoId === featuredId) return;
+        premiereVideoId = featuredId;
+        premiereMessage.textContent = `Ya llegó la hora ♡ «${item.name}» está listo para reproducirse.`;
+        const player = document.createElement('video');
+        player.controls = true;
+        player.playsInline = true;
+        player.preload = 'auto';
+        if (premiereUrl) URL.revokeObjectURL(premiereUrl);
+        premiereUrl = URL.createObjectURL(item.file);
+        player.src = premiereUrl;
+        const play = document.createElement('button');
+        play.className = 'premiere-action';
+        play.type = 'button';
+        play.textContent = '▶ Reproducir mi sorpresa';
+        play.addEventListener('click', () => player.play());
+        premierePlayer.append(player, play);
+        player.play().then(() => { play.hidden = true; }).catch(() => { play.hidden = false; });
+      }
+
+      addButton.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', async () => {
+        const selected = [...fileInput.files].filter(file => file.type.startsWith('video/'));
+        if (!selected.length) return;
+        try {
+          note.textContent = 'Guardando videos…';
+          for (const file of selected) {
+            await withStore('readwrite', store => store.put({ id: `${Date.now()}-${Math.random()}`, name: file.name, file, addedAt: Date.now() }));
+          }
+          await renderVideos();
+        } catch {
+          note.textContent = 'No se pudieron guardar los videos. Puede faltar espacio en el dispositivo.';
+        } finally {
+          fileInput.value = '';
+        }
+      });
+
+      function startApp() {
+        if (appStarted) return;
+        appStarted = true;
+        renderVideos();
+        setInterval(() => { updatePrelude(); updateEvening(); updateEveningTwo(); updateMidnightVideos(); updatePremiere(); }, 1000);
+      }
+      appInitialized = true;
+      if (pageAuthenticated) startApp();
+    })();
+  </script>
+</body>
+</html>
