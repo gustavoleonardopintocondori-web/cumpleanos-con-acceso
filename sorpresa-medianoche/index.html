@@ -8,11 +8,21 @@
   <style>
     :root{color-scheme:dark;--bg:#211628;--panel:#302039;--rose:#ff9fc5;--cream:#fff4f8;--muted:#e2cbd8;--line:#65455c}
     *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;color:var(--cream);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 50% 0%,#573453 0,transparent 45%),linear-gradient(160deg,#211628,#321d35 55%,#24182c);}
+    body{position:relative;isolation:isolate;margin:0;min-height:100vh;color:var(--cream);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 50% 0%,#573453 0,transparent 45%),linear-gradient(160deg,#211628,#321d35 55%,#24182c);}
     [hidden]{display:none!important}
-    .wrap{width:min(1040px,100% - 32px);margin:auto;padding:28px 0 64px}
-    .access-screen{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:22px;background:radial-gradient(ellipse at 50% 5%,#75456e 0,transparent 48%),linear-gradient(155deg,#1d1523,#36213b 62%,#211628);overflow:auto}
-    .access-card{width:min(100%,440px);padding:clamp(25px,6vw,42px);border:1px solid #9a688c;border-radius:28px;background:linear-gradient(150deg,#3a2742ed,#251b2eF2);box-shadow:0 30px 90px #100b17a8;text-align:center}
+    .landscape-scene{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:linear-gradient(180deg,#21172a 0%,#38233f 58%,#31263a 100%)}
+    .scene-stars{position:absolute;inset:0;background-image:radial-gradient(2px 2px at 8% 18%,#fff9 45%,transparent 70%),radial-gradient(1.5px 1.5px at 24% 42%,#ffd9f4c9 45%,transparent 70%),radial-gradient(2px 2px at 44% 14%,#fff8 45%,transparent 70%),radial-gradient(1px 1px at 63% 34%,#fff9 45%,transparent 70%),radial-gradient(2px 2px at 78% 16%,#ffe0f5c9 45%,transparent 70%),radial-gradient(1.5px 1.5px at 91% 42%,#fff8 45%,transparent 70%);animation:stars-twinkle 4s ease-in-out infinite alternate}
+    .scene-moon{position:absolute;top:9%;right:13%;width:74px;height:74px;border-radius:50%;background:#ffedf3;box-shadow:0 0 25px #ffd2ee88,0 0 80px #f2a9dc55}
+    .scene-aurora{position:absolute;top:-25%;left:-18%;width:136%;height:70%;border-radius:50%;filter:blur(40px);opacity:.29;transform:rotate(-9deg);background:linear-gradient(112deg,transparent 28%,#b55d9d 43%,#8676cc 53%,#5bb99c 62%,transparent 78%);animation:aurora-drift 22s ease-in-out infinite alternate}
+    .scene-mountain{position:absolute;left:-15%;width:130%;height:48vh;bottom:-12vh;clip-path:polygon(0 45%,9% 37%,18% 54%,30% 23%,41% 48%,53% 30%,64% 52%,76% 21%,89% 47%,100% 32%,100% 100%,0 100%);animation:mountain-drift 30s ease-in-out infinite alternate}
+    .mountain-far{background:linear-gradient(180deg,#52405d,#2e3b43);opacity:.7;bottom:-5vh}
+    .mountain-near{height:38vh;bottom:-15vh;clip-path:polygon(0 38%,14% 56%,27% 35%,42% 59%,55% 34%,71% 55%,85% 29%,100% 47%,100% 100%,0 100%);background:linear-gradient(180deg,#354c48,#182d2d);opacity:.92;animation-duration:38s;animation-direction:alternate-reverse}
+    .scene-ornaments{position:absolute;inset:0;color:#ffc1df65;font-size:clamp(18px,2vw,27px)}
+    .scene-ornaments span{position:absolute;left:var(--x);top:var(--y);animation:ornament-float var(--duration,9s) ease-in-out var(--delay,0s) infinite alternate}
+    .scene-ornaments span:nth-child(even){color:#fff0c978;font-size:.72em}
+    .wrap{position:relative;z-index:1;width:min(1040px,100% - 32px);margin:auto;padding:28px 0 64px}
+    .access-screen{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:22px;background:linear-gradient(155deg,#1d15237a,#36213b8c 62%,#21162880);backdrop-filter:blur(2px);overflow:auto}
+    .access-card{width:min(100%,440px);padding:clamp(25px,6vw,42px);border:1px solid #c08bad;border-radius:28px;background:linear-gradient(150deg,#3a2742e8,#251b2eea);backdrop-filter:blur(14px);box-shadow:0 30px 90px #100b17a8;text-align:center}
     .access-heart{font-size:2.3rem;color:var(--rose);text-shadow:0 0 25px #ff9fc577;margin-bottom:8px}
     .access-card h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(2rem,8vw,2.7rem);line-height:1.08;margin:10px 0 12px}
     .access-card h1 em{color:var(--rose);font-style:italic}
@@ -75,10 +85,20 @@
     .wish-signature span{font-style:normal}
     footer{text-align:center;color:var(--muted);font-family:Georgia,serif;font-style:italic;margin-top:42px}
     @keyframes pulse{50%{transform:scale(1.18);text-shadow:0 0 28px #ff75b0}}
+    @keyframes stars-twinkle{to{opacity:.55;transform:translateY(-4px)}}
+    @keyframes aurora-drift{to{transform:translate(7%,8%) rotate(4deg);opacity:.4}}
+    @keyframes mountain-drift{to{transform:translateX(3%) scale(1.025)}}
+    @keyframes ornament-float{to{transform:translate3d(10px,-18px,0) rotate(12deg);opacity:.75}}
     @media(max-width:680px){.wrap{width:min(100% - 22px,520px);padding-top:18px}header{padding-bottom:35px}.video-manager{padding:17px}.video-card{min-height:0}.hero{padding-bottom:34px}.manager-head .add-button{width:100%}}
+    @media(prefers-reduced-motion:reduce){.scene-stars,.scene-aurora,.scene-mountain,.scene-ornaments span,.heart{animation:none!important}}
   </style>
 </head>
 <body>
+  <div class="landscape-scene" aria-hidden="true">
+    <div class="scene-stars"></div><div class="scene-moon"></div><div class="scene-aurora"></div>
+    <div class="scene-mountain mountain-far"></div><div class="scene-mountain mountain-near"></div>
+    <div class="scene-ornaments"><span style="--x:9%;--y:25%;--delay:-2s">♡</span><span style="--x:83%;--y:32%;--delay:-5s">✦</span><span style="--x:72%;--y:60%;--delay:-1s">♡</span><span style="--x:18%;--y:68%;--delay:-4s">✧</span><span style="--x:92%;--y:76%;--delay:-3s">♡</span><span style="--x:45%;--y:11%;--delay:-6s">✧</span></div>
+  </div>
   <section class="access-screen" id="accessGate" aria-labelledby="accessTitle">
     <form class="access-card" id="accessForm">
       <div class="access-heart" aria-hidden="true">♡</div>
@@ -182,12 +202,12 @@
   <script>
     (() => {
       const accessUser = 'mi cielo';
-      const accessPassword = 'feliz cumpleaños mi niña';
+      const accessPassword = 'solo mi niña';
       const accessGate = document.getElementById('accessGate');
       const pageContent = document.getElementById('pageContent');
       const accessForm = document.getElementById('accessForm');
       const accessError = document.getElementById('accessError');
-      let pageAuthenticated = sessionStorage.getItem('sorpresa-medianoche-auth') === 'ok';
+      let pageAuthenticated = false;
       let appInitialized = false;
       let appStarted = false;
       function showPage() {
@@ -196,13 +216,11 @@
         pageAuthenticated = true;
         if (appInitialized) startApp();
       }
-      if (pageAuthenticated) showPage();
       accessForm.addEventListener('submit', event => {
         event.preventDefault();
         const enteredUser = document.getElementById('accessUser').value.trim().toLocaleLowerCase('es');
         const enteredPassword = document.getElementById('accessPassword').value.trim().normalize('NFC');
         if (enteredUser === accessUser && enteredPassword === accessPassword.normalize('NFC')) {
-          sessionStorage.setItem('sorpresa-medianoche-auth', 'ok');
           accessError.hidden = true;
           showPage();
         } else {
@@ -552,3 +570,4 @@
   </script>
 </body>
 </html>
+
