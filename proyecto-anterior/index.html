@@ -117,7 +117,42 @@
         const rawKey=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveKey']);
         const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:fromBase64(payload.salt),iterations:payload.iterations,hash:'SHA-256'},rawKey,{name:'AES-GCM',length:256},false,['decrypt']);
         const opened=await crypto.subtle.decrypt({name:'AES-GCM',iv:fromBase64(payload.iv)},key,fromBase64(payload.data));
-        document.open();document.write(new TextDecoder().decode(opened));document.close();
+        const decodedPage=new TextDecoder().decode(opened);
+        const layoutRepair=`<style id="moment-layout-repair">
+          html,body{max-width:100%;overflow-x:hidden}
+          .intro-layout-fixed{position:relative!important;z-index:1!important;height:auto!important;min-height:clamp(300px,62svh,640px)!important;max-height:none!important;overflow:hidden!important;margin-bottom:0!important}
+          .moment-layout-fixed{position:relative!important;z-index:30!important;isolation:isolate!important;clear:both!important;margin-top:0!important;scroll-margin-top:24px}
+          .moment-layout-fixed h1,.moment-layout-fixed h2,.moment-layout-fixed h3,.moment-layout-fixed h4,.moment-layout-fixed [role="heading"]{position:relative!important;z-index:31!important;visibility:visible!important;opacity:1!important}
+          @media(max-width:700px){.intro-layout-fixed{min-height:clamp(260px,55svh,520px)!important}.moment-layout-fixed{padding-top:clamp(18px,4vw,32px)}}
+        </style><script id="moment-layout-repair-script">
+          (function(){
+            function repairMomentLayout(){
+              const normalize=value=>(value||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/\\s+/g,' ').trim();
+              const candidates=Array.from(document.querySelectorAll('h1,h2,h3,h4,h5,h6,[role="heading"],p,div,span'))
+                .filter(el=>normalize(el.textContent).includes('nuestro momento')&&!Array.from(el.children).some(child=>normalize(child.textContent).includes('nuestro momento')));
+              candidates.sort((a,b)=>(a.textContent||'').trim().length-(b.textContent||'').trim().length);
+              const heading=candidates[0];
+              if(!heading)return;
+              const sectionOf=el=>el.closest('section,article')||el;
+              const moment=heading.closest('section,article,[id*="momento" i],[class*="momento" i]')||sectionOf(heading);
+              moment.classList.add('moment-layout-fixed');
+              const introNode=document.querySelector('#inicio,.inicio,[id*="hero" i],[class*="hero" i],[id*="portada" i],[class*="portada" i]');
+              let intro=introNode?sectionOf(introNode):null;
+              if(!intro){
+                let previous=moment.previousElementSibling;
+                while(previous){
+                  if(/^(SECTION|ARTICLE)$/.test(previous.tagName)||/inicio|hero|portada|banner/i.test((previous.id||'')+' '+(typeof previous.className==='string'?previous.className:''))){intro=previous;break;}
+                  previous=previous.previousElementSibling;
+                }
+              }
+              if(intro&&intro!==moment)intro.classList.add('intro-layout-fixed');
+            }
+            if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',repairMomentLayout,{once:true});
+            else repairMomentLayout();
+          })();
+        <\\/script>`;
+        const repairedPage=decodedPage.replace(/<\\/head>/i,layoutRepair+'</head>');
+        document.open();document.write(repairedPage);document.close();
       }catch{
         error.textContent='Los datos no coinciden. Revisa el usuario y la contraseña e inténtalo otra vez.';
         document.getElementById('password').value='';button.disabled=false;button.innerHTML='Entrar a mi sorpresa&nbsp; ♡';
