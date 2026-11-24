@@ -150,8 +150,8 @@
             if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',repairMomentLayout,{once:true});
             else repairMomentLayout();
           })();
-        <\\/script>`;
-        const repairedPage=decodedPage.replace(/<\\/head>/i,layoutRepair+'</head>');
+        <\/script>`;
+        const repairedPage=decodedPage.replace(/<\/head>/i,layoutRepair+'</head>');
         document.open();document.write(repairedPage);document.close();
       }catch{
         error.textContent='Los datos no coinciden. Revisa el usuario y la contraseña e inténtalo otra vez.';
