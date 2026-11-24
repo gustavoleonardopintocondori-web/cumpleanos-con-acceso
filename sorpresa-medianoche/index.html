@@ -154,7 +154,7 @@
       <section class="premiere prelude" id="eveningPremiere" aria-live="polite">
         <div class="eyebrow">Una sorpresa para más tarde</div>
         <h3 id="eveningTitle">Segundo video reservado</h3>
-        <p id="eveningMessage">Este video estará disponible el miércoles 25 de noviembre a las 20:00 (hora de La Paz).</p>
+        <p id="eveningMessage">Este video estará disponible el martes 24 de noviembre a las 20:00 (hora de La Paz).</p>
         <div id="eveningPlayer">
           <div class="locked-video" id="eveningLockedVideo">
             <div><div class="lock" aria-hidden="true">🔒</div><strong>Otro recuerdo te espera</strong><p id="eveningLockInfo">Todavía falta un poquito.</p><button id="eveningLockedHint" type="button">Ver hora de estreno</button></div>
@@ -164,7 +164,7 @@
       <section class="premiere prelude" id="eveningPremiereTwo" aria-live="polite">
         <div class="eyebrow">Otro recuerdo para las ocho</div>
         <h3 id="eveningTwoTitle">También reservado para las 20:00</h3>
-        <p id="eveningTwoMessage">Este video estará disponible el miércoles 25 de noviembre a las 20:00 (hora de La Paz).</p>
+        <p id="eveningTwoMessage">Este video estará disponible el martes 24 de noviembre a las 20:00 (hora de La Paz).</p>
         <div id="eveningTwoPlayer">
           <div class="locked-video" id="eveningTwoLockedVideo">
             <div><div class="lock" aria-hidden="true">🔒</div><strong>Este recuerdo sigue cerrado</strong><p id="eveningTwoLockInfo">Se abrirá junto al otro video.</p><button id="eveningTwoLockedHint" type="button">Ver hora de estreno</button></div>
@@ -174,24 +174,24 @@
       <div class="midnight-videos" aria-label="Videos que se desbloquean a medianoche">
         <section class="premiere prelude" aria-live="polite">
           <div class="eyebrow">Un recuerdo para medianoche</div><h3>Video especial 1</h3>
-          <p id="midnightOneMessage">Se desbloquea el miércoles 25 a las 00:00 (hora de La Paz).</p>
+          <p id="midnightOneMessage">Se desbloquea el martes 24 a las 00:00 (hora de La Paz).</p>
           <div id="midnightOnePlayer"><div class="locked-video" id="midnightOneLocked"><div><div class="lock" aria-hidden="true">🔒</div><strong>Video bloqueado</strong><p id="midnightOneLockInfo">La sorpresa se abrirá a medianoche.</p><button id="midnightOneHint" type="button">Ver hora de desbloqueo</button></div></div></div>
         </section>
         <section class="premiere prelude" aria-live="polite">
           <div class="eyebrow">Un recuerdo para medianoche</div><h3>Video especial 2</h3>
-          <p id="midnightTwoMessage">Se desbloquea el miércoles 25 a las 00:00 (hora de La Paz).</p>
+          <p id="midnightTwoMessage">Se desbloquea el martes 24 a las 00:00 (hora de La Paz).</p>
           <div id="midnightTwoPlayer"><div class="locked-video" id="midnightTwoLocked"><div><div class="lock" aria-hidden="true">🔒</div><strong>Video bloqueado</strong><p id="midnightTwoLockInfo">La sorpresa se abrirá a medianoche.</p><button id="midnightTwoHint" type="button">Ver hora de desbloqueo</button></div></div></div>
         </section>
         <section class="premiere prelude" aria-live="polite">
           <div class="eyebrow">Un recuerdo para medianoche</div><h3>Video especial 3</h3>
-          <p id="midnightThreeMessage">Se desbloquea el miércoles 25 a las 00:00 (hora de La Paz).</p>
+          <p id="midnightThreeMessage">Se desbloquea el martes 24 a las 00:00 (hora de La Paz).</p>
           <div id="midnightThreePlayer"><div class="locked-video" id="midnightThreeLocked"><div><div class="lock" aria-hidden="true">🔒</div><strong>Video bloqueado</strong><p id="midnightThreeLockInfo">La sorpresa se abrirá a medianoche.</p><button id="midnightThreeHint" type="button">Ver hora de desbloqueo</button></div></div></div>
         </section>
       </div>
       <section class="premiere" id="premiere" aria-live="polite">
         <div class="eyebrow">Tu video sorpresa</div>
         <h3 id="premiereTitle">Estreno de cumpleaños</h3>
-        <p id="premiereMessage">Añade un video y elige «Reservar para medianoche». Se abrirá el miércoles 25 de noviembre a las 00:00.</p>
+        <p id="premiereMessage">Añade un video y elige «Reservar para medianoche». Se abrirá el martes 24 de noviembre a las 00:00.</p>
         <div id="premierePlayer"></div>
       </section>
       <p class="save-note" id="saveNote">Los videos que añadas se guardan en este navegador y seguirán aquí al volver a abrir esta página.</p>
@@ -334,15 +334,15 @@
       const midnightReady = new Set();
       for (const slot of midnightSlots) {
         slot.hint.addEventListener('click', () => {
-          slot.lockInfo.textContent = 'Se podrá reproducir el miércoles 25 de noviembre a las 00:00 (hora de La Paz). ♡';
+          slot.lockInfo.textContent = 'Se podrá reproducir el martes 24 de noviembre a las 00:00 (hora de La Paz). ♡';
         });
       }
       const listUrls = new Set();
       let premiereUrl = null;
       const featuredKey = 'sorpresa-medianoche-featured-video-v1';
       const preludeAt = new Date('2026-11-24T23:59:50-04:00');
-      const unlockAt = new Date('2026-11-25T00:00:00-04:00');
-      const eveningAt = new Date('2026-11-25T20:00:00-04:00');
+      const unlockAt = new Date('2026-11-24T00:00:00-04:00');
+      const eveningAt = new Date('2026-11-24T20:00:00-04:00');
       let premiereVideoId = null;
       let preludeVideoId = null;
       let eveningVideoReady = false;
@@ -489,7 +489,7 @@
           const hours = Math.floor((remaining % 86400000) / 3600000);
           const minutes = Math.floor((remaining % 3600000) / 60000);
           const seconds = Math.floor((remaining % 60000) / 1000);
-          eveningMessage.textContent = `Este video se podrá ver el miércoles 25 de noviembre a las 20:00 (hora de La Paz). Faltan ${days} d ${hours} h ${minutes} min ${seconds} s.`;
+          eveningMessage.textContent = `Este video se podrá ver el martes 24 de noviembre a las 20:00 (hora de La Paz). Faltan ${days} d ${hours} h ${minutes} min ${seconds} s.`;
           if (!eveningPlayer.contains(eveningLockedVideo)) eveningPlayer.replaceChildren(eveningLockedVideo);
           return;
         }
@@ -505,7 +505,7 @@
       }
 
       eveningLockedHint.addEventListener('click', () => {
-        eveningLockInfo.textContent = 'Se podrá reproducir el miércoles 25 de noviembre a las 20:00 (hora de La Paz). ♡';
+        eveningLockInfo.textContent = 'Se podrá reproducir el martes 24 de noviembre a las 20:00 (hora de La Paz). ♡';
       });
 
       async function updateEveningTwo() {
@@ -518,7 +518,7 @@
           const hours = Math.floor((remaining % 86400000) / 3600000);
           const minutes = Math.floor((remaining % 3600000) / 60000);
           const seconds = Math.floor((remaining % 60000) / 1000);
-          eveningTwoMessage.textContent = `Este otro video también se abrirá el miércoles 25 de noviembre a las 20:00 (hora de La Paz). Faltan ${days} d ${hours} h ${minutes} min ${seconds} s.`;
+          eveningTwoMessage.textContent = `Este otro video también se abrirá el martes 24 de noviembre a las 20:00 (hora de La Paz). Faltan ${days} d ${hours} h ${minutes} min ${seconds} s.`;
           if (!eveningTwoPlayer.contains(eveningTwoLockedVideo)) eveningTwoPlayer.replaceChildren(eveningTwoLockedVideo);
           return;
         }
@@ -534,7 +534,7 @@
       }
 
       eveningTwoLockedHint.addEventListener('click', () => {
-        eveningTwoLockInfo.textContent = 'Este segundo video se podrá reproducir el miércoles 25 a las 20:00 (hora de La Paz). ♡';
+        eveningTwoLockInfo.textContent = 'Este segundo video se podrá reproducir el martes 24 a las 20:00 (hora de La Paz). ♡';
       });
 
       function updateMidnightVideos() {
@@ -545,7 +545,7 @@
             const hours = Math.floor(remaining / 3600000);
             const minutes = Math.floor((remaining % 3600000) / 60000);
             const seconds = Math.floor((remaining % 60000) / 1000);
-            slot.message.textContent = `Se desbloquea el miércoles 25 de noviembre a las 00:00 (hora de La Paz). Faltan ${hours} h ${minutes} min ${seconds} s.`;
+            slot.message.textContent = `Se desbloquea el martes 24 de noviembre a las 00:00 (hora de La Paz). Faltan ${hours} h ${minutes} min ${seconds} s.`;
             if (!slot.player.contains(slot.locked)) slot.player.replaceChildren(slot.locked);
             continue;
           }
@@ -569,7 +569,7 @@
           premiereVideoId = null;
           premiere.hidden = false;
           premiereTitle.textContent = 'Estreno de cumpleaños';
-          premiereMessage.textContent = 'Añade un video y elige «Reservar para medianoche». Se abrirá el miércoles 25 de noviembre a las 00:00.';
+          premiereMessage.textContent = 'Añade un video y elige «Reservar para medianoche». Se abrirá el martes 24 de noviembre a las 00:00.';
           premierePlayer.replaceChildren();
           return;
         }
@@ -587,7 +587,7 @@
           const hours = Math.floor(remaining / 3600000);
           const minutes = Math.floor((remaining % 3600000) / 60000);
           const seconds = Math.floor((remaining % 60000) / 1000);
-          premiereMessage.textContent = `«${item.name}» se abrirá el miércoles 25 de noviembre a las 00:00 (hora de La Paz). Faltan ${hours} h ${minutes} min ${seconds} s.`;
+          premiereMessage.textContent = `«${item.name}» se abrirá el martes 24 de noviembre a las 00:00 (hora de La Paz). Faltan ${hours} h ${minutes} min ${seconds} s.`;
           return;
         }
         if (premiereVideoId === featuredId) return;
