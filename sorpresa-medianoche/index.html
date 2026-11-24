@@ -35,6 +35,8 @@
     header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0 52px}
     .brand{font-size:.76rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--rose)}
     .pill{border:1px solid var(--line);border-radius:999px;padding:9px 14px;color:var(--muted);font-size:.84rem}
+    .header-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+    .music-toggle{font:inherit;background:#302039d9;cursor:pointer}
     .hero{text-align:center;padding:12px 10px 48px}
     .eyebrow{color:var(--rose);letter-spacing:.22em;text-transform:uppercase;font-size:.76rem;font-weight:800}
     h1,h2{font-family:Georgia,"Times New Roman",serif;font-weight:500}
@@ -97,7 +99,7 @@
     @keyframes aurora-drift{to{transform:translate(7%,8%) rotate(4deg);opacity:.4}}
     @keyframes mountain-drift{to{transform:translateX(3%) scale(1.025)}}
     @keyframes ornament-float{to{transform:translate3d(10px,-18px,0) rotate(12deg);opacity:.75}}
-    @media(max-width:680px){.wrap{width:min(100% - 22px,520px);padding-top:18px}header{padding-bottom:35px}.video-manager{padding:17px}.video-card{min-height:0}.hero{padding-bottom:34px}.manager-head .add-button{width:100%}}
+    @media(max-width:680px){.wrap{width:min(100% - 22px,520px);padding-top:18px}header{padding-bottom:35px;align-items:flex-start}.header-actions{max-width:70%;gap:6px}.pill{padding:8px 11px;font-size:.76rem}.video-manager{padding:17px}.video-card{min-height:0}.hero{padding-bottom:34px}.manager-head .add-button{width:100%}}
     @media(prefers-reduced-motion:reduce){.scene-stars,.scene-aurora,.scene-mountain,.scene-ornaments span,.heart{animation:none!important}}
   </style>
 </head>
@@ -124,7 +126,7 @@
     </form>
   </section>
   <main class="wrap" id="pageContent" hidden>
-    <header><div class="brand">Un regalo hecho con amor</div><div class="pill">Para abrir a las 00:00 ♡</div></header>
+    <header><div class="brand">Un regalo hecho con amor</div><div class="header-actions"><div class="pill">Para abrir a las 00:00 ♡</div><button class="pill music-toggle" id="musicToggle" type="button" aria-label="Activar o pausar la música de fondo">♫ Tocar música</button></div></header>
     <section class="hero">
       <div class="eyebrow">Hoy comienza un día especial</div>
       <h1>Feliz cumpleaños,<br><em>mi niña hermosa</em></h1>
@@ -207,10 +209,67 @@
     </section>
     <footer>Con todo mi amor, para ti ♡</footer>
   </main>
+  <audio id="backgroundMusic" preload="none"></audio>
   <script>
     (() => {
       const accessUser = 'mi cielo';
       const accessPassword = 'mi niña';
+      const backgroundMusic = document.getElementById('backgroundMusic');
+      const musicToggle = document.getElementById('musicToggle');
+      const musicTracks = ['../musica/cancion-1.mp3', '../musica/cancion-2.mp3'];
+      let musicTrackIndex = 0;
+      let musicEnabled = true;
+      let musicHasStarted = false;
+      let videoIsPlaying = false;
+      backgroundMusic.volume = 0.12;
+      backgroundMusic.src = musicTracks[musicTrackIndex];
+
+      async function startBackgroundMusic() {
+        if (!musicEnabled || videoIsPlaying) return;
+        try {
+          await backgroundMusic.play();
+          musicHasStarted = true;
+          musicToggle.textContent = '♫ Música bajita';
+        } catch {
+          musicToggle.textContent = '♫ Tocar música';
+        }
+      }
+
+      musicToggle.addEventListener('click', () => {
+        musicEnabled = !musicEnabled;
+        if (musicEnabled) startBackgroundMusic();
+        else {
+          backgroundMusic.pause();
+          musicToggle.textContent = '♫ Música pausada';
+        }
+      });
+
+      backgroundMusic.addEventListener('ended', () => {
+        musicTrackIndex = (musicTrackIndex + 1) % musicTracks.length;
+        backgroundMusic.src = musicTracks[musicTrackIndex];
+        startBackgroundMusic();
+      });
+
+      document.addEventListener('play', event => {
+        if (event.target instanceof HTMLVideoElement) {
+          videoIsPlaying = true;
+          backgroundMusic.pause();
+          if (musicEnabled) musicToggle.textContent = '♫ Pausada durante el video';
+        }
+      }, true);
+
+      function resumeBackgroundMusicAfterVideo() {
+        const anotherVideoIsPlaying = [...document.querySelectorAll('video')].some(video => !video.paused && !video.ended);
+        if (anotherVideoIsPlaying) return;
+        videoIsPlaying = false;
+        if (musicEnabled && musicHasStarted) startBackgroundMusic();
+      }
+      document.addEventListener('pause', event => {
+        if (event.target instanceof HTMLVideoElement) resumeBackgroundMusicAfterVideo();
+      }, true);
+      document.addEventListener('ended', event => {
+        if (event.target instanceof HTMLVideoElement) resumeBackgroundMusicAfterVideo();
+      }, true);
       const accessGate = document.getElementById('accessGate');
       const pageContent = document.getElementById('pageContent');
       const accessForm = document.getElementById('accessForm');
@@ -231,6 +290,7 @@
         if (enteredUser === accessUser && enteredPassword === accessPassword.normalize('NFC')) {
           accessError.hidden = true;
           showPage();
+          startBackgroundMusic();
         } else {
           accessError.hidden = false;
           document.getElementById('accessPassword').value = '';
