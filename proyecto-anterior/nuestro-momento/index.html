@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#25172e">
+  <title>Nuestro momento ♡</title>
+  <style id="moment-page-overrides">
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{width:100%;max-width:100%;min-width:0;min-height:100%;margin:0;overflow-x:hidden}
+    body{display:block!important;background:#25172e!important;color:#fff4f8;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+    .moment-topbar{position:sticky;top:0;z-index:9999;display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:12px clamp(14px,4vw,28px);background:#25172eeF;border-bottom:1px solid #ffffff26;backdrop-filter:blur(14px)}
+    .moment-topbar strong{font-family:Georgia,serif;font-size:clamp(17px,3vw,22px);font-weight:500;color:#fff4f8}
+    .moment-back{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 15px;border:1px solid #b76d91;border-radius:999px;background:#432747;color:#ffe5f1;font:600 14px system-ui,sans-serif;text-decoration:none;cursor:pointer}
+    #moment-content{position:relative!important;display:block!important;width:min(100% - 24px,1000px)!important;max-width:1000px!important;min-width:0!important;margin:0 auto!important;padding:clamp(18px,4vw,36px) 0 60px!important;overflow:visible!important;transform:none!important}
+    #moment-content *{box-sizing:border-box;min-width:0;max-width:100%}
+    #moment-content img,#moment-content picture,#moment-content video,#moment-content iframe,#moment-content svg{max-width:100%;height:auto}
+    #moment-content h1,#moment-content h2,#moment-content h3,#moment-content h4,
+    #moment-content p,#moment-content a,#moment-content span{overflow-wrap:anywhere;word-break:normal}
+    #moment-content section,#moment-content article,#moment-content [class*="gallery"],#moment-content [class*="grid"]{min-width:0;max-width:100%}
+    #moment-content [style*="grid-template-columns"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+    .moment-loading,.moment-error{width:min(100% - 32px,640px);margin:40px auto;padding:26px;border:1px solid #ffffff2b;border-radius:22px;background:#392543;color:#fff4f8;text-align:center;line-height:1.7}
+    .moment-error a{color:#ffb6d0}
+    @media(max-width:700px){
+      #moment-content{width:calc(100% - 22px)!important;padding-top:18px!important}
+      #moment-content [style*="grid-template-columns"],
+      #moment-content [class*="grid"],#moment-content [class*="gallery"]{
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important
+      }
+      #moment-content [class*="card"],#moment-content [class*="photo"],
+      #moment-content [class*="item"]{width:100%!important;min-width:0!important;max-width:100%!important}
+      #moment-content p,#moment-content h1,#moment-content h2,#moment-content h3{overflow-wrap:anywhere!important}
+    }
+    @media(max-width:360px){
+      #moment-content [style*="grid-template-columns"],
+      #moment-content [class*="grid"],#moment-content [class*="gallery"]{
+        grid-template-columns:minmax(0,1fr)!important
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="moment-topbar">
+    <a class="moment-back" href="../" id="momentBack">← Volver</a>
+    <strong>Nuestro momento ♡</strong>
+    <span aria-hidden="true" style="width:74px"></span>
+  </header>
+  <div id="moment-status" class="moment-loading">Abriendo nuestros recuerdos…</div>
+  <main id="moment-content"></main>
+  <script>
+    (function(){
+      const status=document.getElementById('moment-status');
+      const content=document.getElementById('moment-content');
+      const raw=sessionStorage.getItem('proyectoAnteriorDecodedPage');
+      const normalize=value=>(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+      if(!raw){
+        status.className='moment-error';
+        status.innerHTML='Primero debes entrar a la sorpresa con tu usuario y contraseña. <a href="../">Volver al inicio</a>';
+        return;
+      }
+      try{
+        const source=new DOMParser().parseFromString(raw,'text/html');
+        source.head.querySelectorAll('link[rel="stylesheet"],style').forEach(node=>{
+          document.head.insertBefore(node.cloneNode(true),document.getElementById('moment-page-overrides'));
+        });
+        const candidates=Array.from(source.body.querySelectorAll('h1,h2,h3,h4,h5,h6,[role="heading"],p,div,span,a,button'))
+          .filter(el=>normalize(el.textContent).includes('nuestro momento')&&!Array.from(el.children).some(child=>normalize(child.textContent).includes('nuestro momento')));
+        candidates.sort((a,b)=>(a.textContent||'').trim().length-(b.textContent||'').trim().length);
+        const heading=candidates.find(el=>/^H[1-6]$/.test(el.tagName))||candidates[0];
+        if(!heading)throw new Error('No se encontró el título de la sección.');
+        let section=heading.closest('section,article,[id*="momento" i],[class*="momento" i]');
+        if(!section||section===source.body||section.tagName==='MAIN'){
+          let node=heading;
+          while(node.parentElement&&node.parentElement!==source.body){
+            const parent=node.parentElement;
+            if(parent.children.length>=2&&(parent.innerText||parent.textContent||'').trim().length>80){section=parent;break;}
+            node=parent;
+          }
+        }
+        if(!section)section=heading.parentElement;
+        if(!section)throw new Error('No se pudo localizar el contenido de Nuestro momento.');
+        const clone=section.cloneNode(true);
+        clone.querySelectorAll('script').forEach(node=>node.remove());
+        clone.classList.add('moment-page-section');
+        content.appendChild(clone);
+        status.remove();
+        const fixGrids=()=>{
+          Array.from(content.querySelectorAll('*')).forEach(el=>{
+            if(getComputedStyle(el).display==='grid'&&el.children.length>=3){
+              el.style.setProperty('grid-template-columns','repeat(2,minmax(0,1fr))','important');
+              el.style.setProperty('min-width','0','important');
+              Array.from(el.children).forEach(child=>{
+                child.style.setProperty('min-width','0','important');
+                child.style.setProperty('max-width','100%','important');
+              });
+            }
+          });
+        };
+        fixGrids();
+        window.addEventListener('resize',fixGrids,{passive:true});
+      }catch(error){
+        status.className='moment-error';
+        status.textContent='No se pudo cargar esta sección. Vuelve al inicio e inténtalo otra vez.';
+      }
+      document.getElementById('momentBack').addEventListener('click',event=>{
+        if(history.length>1){event.preventDefault();history.back();}
+      });
+    })();
+  </script>
+</body>
+</html>
