@@ -94,6 +94,8 @@
               Array.from(el.children).forEach(child=>{
                 child.style.setProperty('min-width','0','important');
                 child.style.setProperty('max-width','100%','important');
+                child.style.setProperty('width','100%','important');
+                child.style.setProperty('grid-column','auto','important');
               });
             }
           });
