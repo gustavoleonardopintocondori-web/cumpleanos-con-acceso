@@ -81,6 +81,8 @@
         if(!section)throw new Error('No se pudo localizar el contenido de Nuestro momento.');
         const clone=section.cloneNode(true);
         clone.querySelectorAll('script').forEach(node=>node.remove());
+        clone.classList.remove('moment-hidden-on-home');
+        clone.style.removeProperty('display');
         clone.classList.add('moment-page-section');
         content.appendChild(clone);
         status.remove();
