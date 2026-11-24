@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#25172e">
+<base href="/cumpleanos-con-acceso/proyecto-anterior/"><title>Cartas y mensajes ♡</title>
+<style id="section-page-overrides">
+*,*::before,*::after{box-sizing:border-box}
+html,body{width:100%;max-width:100%;min-width:0;min-height:100%;margin:0;overflow-x:hidden}
+body{display:block!important;background:radial-gradient(ellipse at 50% 0,#573453 0,transparent 45%),linear-gradient(160deg,#211628,#321d35 55%,#24182c)!important;color:#fff4f8;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.section-topbar{position:sticky;top:0;z-index:10000;display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:12px clamp(14px,4vw,28px);background:#25172ef2;border-bottom:1px solid #ffffff26;backdrop-filter:blur(14px)}
+.section-topbar strong{font-family:Georgia,serif;font-size:clamp(17px,3vw,22px);font-weight:500;color:#fff4f8;text-align:center}
+.section-back,.section-menu-toggle{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 14px;border:1px solid #b76d91;border-radius:999px;background:#432747;color:#ffe5f1;font:600 13px system-ui,sans-serif;text-decoration:none;cursor:pointer;white-space:nowrap}
+.section-menu-toggle{background:#5b3654}
+.section-main{width:min(100% - 24px,1040px);max-width:1040px;min-width:0;margin:0 auto;padding:clamp(20px,4vw,38px) 0 64px}
+.section-status{width:min(100%,680px);margin:30px auto;padding:25px;border:1px solid #ffffff2b;border-radius:22px;background:#392543;color:#fff4f8;text-align:center;line-height:1.75}
+.section-status a{color:#ffb6d0}
+#section-content{width:100%;min-width:0;max-width:100%;overflow:visible}
+#section-content *{box-sizing:border-box;min-width:0;max-width:100%}
+#section-content img,#section-content picture,#section-content video,#section-content iframe,#section-content svg,#section-content canvas{max-width:100%;height:auto}
+#section-content img{object-fit:contain}
+#section-content h1,#section-content h2,#section-content h3,#section-content h4,#section-content p,#section-content a,#section-content span{overflow-wrap:anywhere;word-break:normal}
+#section-content section,#section-content article,#section-content [class*="gallery"],#section-content [class*="grid"]{min-width:0;max-width:100%}
+#section-content [style*="grid-template-columns"]{grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))!important}
+#section-content .section-route-hidden,#section-content .moment-hidden-on-home{display:revert!important}
+#sectionMenuPanel{position:fixed;top:68px;right:14px;z-index:11000;width:min(300px,calc(100vw - 28px));padding:12px;border:1px solid #95627e;border-radius:18px;background:#2d2035;box-shadow:0 20px 55px #100914aa}
+#sectionMenuPanel[hidden]{display:none!important}
+#sectionMenuPanel a{display:block;padding:12px;border-radius:10px;color:#ffe5f1;text-decoration:none}
+#sectionMenuPanel a:hover{background:#ffffff12}
+.music-fallback{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px}
+.music-track{padding:18px;border:1px solid #76516c;border-radius:18px;background:#302039}
+.music-track h2{font:500 1.3rem Georgia,serif;margin:0 0 14px;color:#fff4f8}
+.music-track audio{display:block;width:100%;max-width:100%}
+@media(max-width:600px){.section-topbar{gap:7px;padding:10px}.section-topbar strong{font-size:16px}.section-back,.section-menu-toggle{min-height:39px;padding:8px 10px;font-size:12px}.section-main{width:calc(100% - 20px);padding-top:17px}#section-content [style*="grid-template-columns"],#section-content [class*="grid"],#section-content [class*="gallery"]{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}#section-content img{width:auto;max-width:100%;height:auto}}
+@media(max-width:360px){#section-content [style*="grid-template-columns"],#section-content [class*="grid"],#section-content [class*="gallery"]{grid-template-columns:minmax(0,1fr)!important}}
+</style></head>
+<body data-section="cartas">
+<header class="section-topbar">
+<a class="section-back" href="/cumpleanos-con-acceso/proyecto-anterior/">← Inicio</a><strong>Cartas y mensajes ♡</strong>
+<button class="section-menu-toggle" id="section-menu-toggle" type="button" aria-expanded="false">Secciones ☰</button>
+</header>
+<nav id="sectionMenuPanel" hidden aria-label="Otras secciones">
+<a href="/cumpleanos-con-acceso/proyecto-anterior/">Inicio</a>
+<a href="/cumpleanos-con-acceso/proyecto-anterior/musica/">♫ Música</a>
+<a href="/cumpleanos-con-acceso/proyecto-anterior/momento/">✧ Momento</a>
+<a href="/cumpleanos-con-acceso/proyecto-anterior/nuestro-momento/">♡ Nuestro momento</a>
+<a href="/cumpleanos-con-acceso/proyecto-anterior/cartas/">✉ Cartas y mensajes</a>
+</nav>
+<main class="section-main"><div id="section-status" class="section-status">Cargando Cartas y mensajes…</div><div id="section-content"></div></main>
+<script>
+(function(){
+ const slug=document.body.dataset.section;
+ const status=document.getElementById('section-status'),content=document.getElementById('section-content');
+ const raw=sessionStorage.getItem('proyectoAnteriorDecodedPage');
+ const norm=v=>(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+ function matches(text){const t=norm(text);if(slug==='nuestro-momento')return t.includes('nuestro momento');if(slug==='momento')return(t.includes('momento')||/\brecuerdos?\b/.test(t))&&!t.includes('nuestro momento');if(slug==='musica')return/\b(musica|cancion|canciones|playlist|reproductor)\b/.test(t);if(slug==='cartas')return/\b(cartas|mensajes|dedicatorias)\b|palabras para ti/.test(t);return false}
+ function rootFor(h,doc){const s=h.closest('section,article');if(s&&s!==doc.body&&s.tagName!=='MAIN')return s;let n=h;while(n.parentElement&&n.parentElement!==doc.body){const p=n.parentElement;if(p.children.length>=2&&(p.innerText||p.textContent||'').trim().length>70)return p;n=p}return h.parentElement}
+ function cloneClean(root){const c=root.cloneNode(true);c.querySelectorAll('script').forEach(n=>n.remove());c.classList.remove('moment-hidden-on-home','section-route-hidden','moment-layout-fixed','moment-page-section');c.classList.add('section-page-content');c.style.removeProperty('display');c.querySelectorAll('.moment-hidden-on-home,.section-route-hidden').forEach(n=>{n.classList.remove('moment-hidden-on-home','section-route-hidden');n.style.removeProperty('display')});return c}
+ function fail(msg){status.textContent=msg;const a=document.createElement('a');a.href='/cumpleanos-con-acceso/proyecto-anterior/';a.textContent='Volver al inicio';a.style.display='block';a.style.marginTop='14px';status.appendChild(a)}
+ if(!raw){fail('Primero entra a la página principal con tu usuario y contraseña para abrir esta sección.')}
+ else{try{
+  const source=new DOMParser().parseFromString(raw,'text/html');
+  source.head.querySelectorAll('link[rel="stylesheet"],style').forEach(n=>document.head.insertBefore(n.cloneNode(true),document.getElementById('section-page-overrides')));
+  const headings=Array.from(source.body.querySelectorAll('h1,h2,h3,h4,h5,h6,[role="heading"]')).filter(h=>matches(h.textContent));
+  headings.sort((a,b)=>(a.textContent||'').trim().length-(b.textContent||'').trim().length);
+  const root=headings.length?rootFor(headings[0],source):null;
+  if(root&&root!==source.body&&root.tagName!=='MAIN'){content.appendChild(cloneClean(root))}
+  else if(slug==='musica'){
+   const tracks=Array.from(source.querySelectorAll('audio'));
+   if(tracks.length){const list=document.createElement('section');list.className='music-fallback';tracks.forEach((audio,i)=>{const card=document.createElement('article');card.className='music-track';const h=document.createElement('h2');h.textContent='Pista '+(i+1);card.appendChild(h);const player=audio.cloneNode(true);player.controls=true;player.removeAttribute('autoplay');card.appendChild(player);list.appendChild(card)});content.appendChild(list)}
+  }
+  if(content.children.length){status.remove();content.querySelectorAll('audio').forEach(a=>{a.controls=true;a.removeAttribute('autoplay')})}
+  else fail('No pude identificar esta sección dentro del contenido original. Vuelve al inicio para revisar las demás secciones.');
+ }catch(e){fail('No se pudo cargar esta sección. Vuelve al inicio e inténtalo otra vez.')}}
+ const toggle=document.getElementById('section-menu-toggle'),panel=document.getElementById('sectionMenuPanel');
+ toggle.addEventListener('click',()=>{panel.hidden=!panel.hidden;toggle.setAttribute('aria-expanded',String(!panel.hidden))});
+ document.addEventListener('click',e=>{if(!panel.hidden&&!panel.contains(e.target)&&e.target!==toggle){panel.hidden=true;toggle.setAttribute('aria-expanded','false')}});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){panel.hidden=true;toggle.setAttribute('aria-expanded','false')}});
+})();
+</script></body></html>
