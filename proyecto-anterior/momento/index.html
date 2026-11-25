@@ -70,6 +70,7 @@ body{display:block!important;background:radial-gradient(ellipse at 50% 0,#573453
   if(content.children.length){status.remove();content.querySelectorAll('audio').forEach(a=>{a.controls=true;a.removeAttribute('autoplay')})}
   else fail('No pude identificar esta sección dentro del contenido original. Vuelve al inicio para revisar las demás secciones.');
  }catch(e){fail('No se pudo cargar esta sección. Vuelve al inicio e inténtalo otra vez.')}}
+ const toggleLinks=panel.querySelectorAll('a[href*="/musica/"],a[href*="/momento/"],a[href*="/nuestro-momento/"],a[href*="/cartas/"]');toggleLinks.forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const opened=window.open(a.href,'_blank');if(!opened)window.location.href=a.href;}));
  const toggle=document.getElementById('section-menu-toggle'),panel=document.getElementById('sectionMenuPanel');
  toggle.addEventListener('click',()=>{panel.hidden=!panel.hidden;toggle.setAttribute('aria-expanded',String(!panel.hidden))});
  document.addEventListener('click',e=>{if(!panel.hidden&&!panel.contains(e.target)&&e.target!==toggle){panel.hidden=true;toggle.setAttribute('aria-expanded','false')}});
