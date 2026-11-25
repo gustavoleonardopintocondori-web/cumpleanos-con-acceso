@@ -109,7 +109,7 @@
     <div class="scene-mountain mountain-far"></div><div class="scene-mountain mountain-near"></div>
     <div class="scene-ornaments"><span style="--x:9%;--y:25%;--delay:-2s">♡</span><span style="--x:83%;--y:32%;--delay:-5s">✦</span><span style="--x:72%;--y:60%;--delay:-1s">♡</span><span style="--x:18%;--y:68%;--delay:-4s">✧</span><span style="--x:92%;--y:76%;--delay:-3s">♡</span><span style="--x:45%;--y:11%;--delay:-6s">✧</span></div>
   </div>
-  <section class="access-screen" id="accessGate" aria-labelledby="accessTitle" hidden>
+  <section class="access-screen" id="accessGate" aria-labelledby="accessTitle">
     <form class="access-card" id="accessForm">
       <div class="access-heart" aria-hidden="true">♡</div>
       <div class="eyebrow">Un regalo hecho con amor</div>
@@ -125,7 +125,7 @@
       <p class="access-error" id="accessError" role="alert" hidden>El usuario o la contraseña no son correctos. Inténtalo otra vez.</p>
     </form>
   </section>
-  <main class="wrap" id="pageContent">
+  <main class="wrap" id="pageContent" hidden>
     <header><div class="brand">Un regalo hecho con amor</div><div class="header-actions"><div class="pill">Para abrir a las 00:00 ♡</div><button class="pill music-toggle" id="musicToggle" type="button" aria-label="Activar o pausar la música de fondo">♫ Tocar música</button></div></header>
     <section class="hero">
       <div class="eyebrow">Hoy comienza un día especial</div>
@@ -287,7 +287,7 @@
         event.preventDefault();
         const enteredUser = document.getElementById('accessUser').value.trim().toLocaleLowerCase('es');
         const enteredPassword = document.getElementById('accessPassword').value.trim().normalize('NFC');
-        if (enteredUser === accessUser && enteredPassword.toLocaleLowerCase('es') === accessPassword.normalize('NFC').toLocaleLowerCase('es')) {
+        if (enteredUser === accessUser && enteredPassword === accessPassword.normalize('NFC')) {
           accessError.hidden = true;
           showPage();
           startBackgroundMusic();
@@ -633,7 +633,7 @@
         setInterval(() => { updatePrelude(); updateEvening(); updateEveningTwo(); updateMidnightVideos(); updatePremiere(); }, 1000);
       }
       appInitialized = true;
-      showPage();
+      if (pageAuthenticated) startApp();
     })();
   </script>
 </body>
