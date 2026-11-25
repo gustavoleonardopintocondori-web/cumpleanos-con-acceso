@@ -287,7 +287,7 @@
         event.preventDefault();
         const enteredUser = document.getElementById('accessUser').value.trim().toLocaleLowerCase('es');
         const enteredPassword = document.getElementById('accessPassword').value.trim().normalize('NFC');
-        if (enteredUser === accessUser && enteredPassword === accessPassword.normalize('NFC')) {
+        if (enteredUser === accessUser && enteredPassword.toLocaleLowerCase('es') === accessPassword.normalize('NFC').toLocaleLowerCase('es')) {
           accessError.hidden = true;
           showPage();
           startBackgroundMusic();
