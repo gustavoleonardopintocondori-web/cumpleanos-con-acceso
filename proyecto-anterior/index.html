@@ -109,18 +109,27 @@
     const fromBase64=value=>Uint8Array.from(atob(value),c=>c.charCodeAt(0));
     form.addEventListener('submit',async event=>{
       event.preventDefault();error.textContent='';
-      const username=document.getElementById('username').value.trim().toLowerCase();
       const password=document.getElementById('password').value;
-      const normalizePassword=value=>(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
-      const suppliedPassword=normalizePassword(password);
-      if(username!=='mi cielo'||suppliedPassword!=='feliz cumpleanos mi nina'){error.textContent='Usuario o contraseña incorrectos. Escribe la contraseña anterior: Feliz cumpleaños mi niña.';return}
+      if(!password.trim()){error.textContent='Escribe la contraseña para continuar.';return}
       button.disabled=true;button.textContent='Preparando tu sorpresa…';
       try{
+        const trimmed=password.trim();
+        const noAccents=value=>value.normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');
+        const candidates=[...new Set([
+          password,
+          trimmed,
+          trimmed.normalize('NFC'),
+          trimmed.toLowerCase(),
+          noAccents(trimmed),
+          noAccents(trimmed).toLowerCase(),
+          trimmed.charAt(0).toUpperCase()+trimmed.slice(1),
+          noAccents(trimmed.charAt(0).toUpperCase()+trimmed.slice(1))
+        ])];
         let opened=null;
         let decryptError=null;
-        for(const oldPassword of ['feliz cumpleaños mi niña','Feliz cumpleaños mi niña']){
+        for(const candidate of candidates){
           try{
-            const rawKey=await crypto.subtle.importKey('raw',new TextEncoder().encode(oldPassword),'PBKDF2',false,['deriveKey']);
+            const rawKey=await crypto.subtle.importKey('raw',new TextEncoder().encode(candidate),'PBKDF2',false,['deriveKey']);
             const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:fromBase64(payload.salt),iterations:payload.iterations,hash:'SHA-256'},rawKey,{name:'AES-GCM',length:256},false,['decrypt']);
             opened=await crypto.subtle.decrypt({name:'AES-GCM',iv:fromBase64(payload.iv)},key,fromBase64(payload.data));
             break;
@@ -135,7 +144,7 @@
         
         document.open();document.write(repairedPage);document.close();
       }catch{
-        error.textContent='Los datos no coinciden. Revisa el usuario y la contraseña e inténtalo otra vez.';
+        error.textContent='La contraseña no coincide con la clave del contenido. Prueba la contraseña anterior exactamente como la usabas: Feliz cumpleaños mi niña.';
         document.getElementById('password').value='';button.disabled=false;button.innerHTML='Entrar a mi sorpresa&nbsp; ♡';
       }
     });
