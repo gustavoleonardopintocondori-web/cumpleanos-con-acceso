@@ -106,6 +106,13 @@
     const error=document.getElementById('error');
     const payload=JSON.parse(document.getElementById('cipher-data').textContent);
     const fromBase64=value=>Uint8Array.from(atob(value),c=>c.charCodeAt(0));
+    // Si este navegador ya abrió la sorpresa anteriormente, recupera la copia local.
+    try{
+      const savedPage=localStorage.getItem('proyectoAnteriorDecodedPage')||sessionStorage.getItem('proyectoAnteriorDecodedPage');
+      if(savedPage&&savedPage.includes('<html')&&!savedPage.includes('id="accessForm"')){
+        document.open();document.write(savedPage);document.close();
+      }
+    }catch(e){}
     form.addEventListener('submit',async event=>{
       event.preventDefault();error.textContent='';
       const password=document.getElementById('password').value;
@@ -144,7 +151,7 @@
         document.open();document.write(repairedPage);document.close();
       }catch{
         error.textContent='La contraseña no coincide con la clave del contenido. Prueba la contraseña anterior exactamente como la usabas: Feliz cumpleaños mi niña.';
-        document.getElementById('password').value='';button.disabled=false;button.innerHTML='Entrar a mi sorpresa&nbsp; ♡';
+        button.disabled=false;button.innerHTML='Entrar a mi sorpresa&nbsp; ♡';
       }
     });
   </script>
