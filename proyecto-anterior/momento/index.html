@@ -67,7 +67,7 @@ body{display:block!important;background:radial-gradient(ellipse at 50% 0,#573453
    const tracks=Array.from(source.querySelectorAll('audio'));
    if(tracks.length){const list=document.createElement('section');list.className='music-fallback';tracks.forEach((audio,i)=>{const card=document.createElement('article');card.className='music-track';const h=document.createElement('h2');h.textContent='Pista '+(i+1);card.appendChild(h);const player=audio.cloneNode(true);player.controls=true;player.removeAttribute('autoplay');card.appendChild(player);list.appendChild(card)});content.appendChild(list)}
   }
-  if(content.children.length){status.remove();content.querySelectorAll('audio').forEach(a=>{a.controls=true;a.removeAttribute('autoplay')})}
+  if(content.children.length){status.remove();if(slug==='musica'){content.querySelectorAll('audio').forEach(a=>{a.controls=true;a.removeAttribute('autoplay')})}else{content.querySelectorAll('audio').forEach(a=>{try{a.pause()}catch(e){}a.remove()})}}
   else fail('No pude identificar esta sección dentro del contenido original. Vuelve al inicio para revisar las demás secciones.');
  }catch(e){fail('No se pudo cargar esta sección. Vuelve al inicio e inténtalo otra vez.')}}
  const toggleLinks=panel.querySelectorAll('a[href*="/musica/"],a[href*="/momento/"],a[href*="/nuestro-momento/"],a[href*="/cartas/"]');toggleLinks.forEach(a=>a.addEventListener('click',e=>{e.preventDefault();const opened=window.open(a.href,'_blank');if(!opened)window.location.href=a.href;}));
