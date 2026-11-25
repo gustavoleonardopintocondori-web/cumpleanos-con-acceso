@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#25172e">
+<title>Cambiar contraseña ♡</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:22px;display:grid;place-items:center;background:linear-gradient(145deg,#211628,#573453 58%,#24182c);color:#fff4f8;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.card{width:min(100%,560px);padding:clamp(22px,5vw,38px);border:1px solid #ffffff30;border-radius:26px;background:#2b1d32;box-shadow:0 24px 70px #10091488}
+h1{margin:0 0 12px;font:500 clamp(27px,6vw,36px) Georgia,serif;text-align:center}
+p{line-height:1.7;color:#e3cbd8;font-size:14px}
+label{display:block;margin:17px 0 7px;font-size:13px;font-weight:700}
+input{width:100%;min-height:48px;padding:13px 14px;border:1px solid #89617f;border-radius:12px;background:#211728;color:#fff;font:16px system-ui}
+input:focus{outline:3px solid #bd7098;outline-offset:2px}
+button,.download{display:flex;width:100%;min-height:48px;align-items:center;justify-content:center;margin-top:18px;padding:13px 16px;border:0;border-radius:13px;background:#d783a8;color:#301d2d;font:700 14px system-ui;text-decoration:none;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+.note{padding:13px 14px;border:1px solid #8c6b8b;border-radius:13px;background:#ffffff0b;font-size:12px;color:#ecd8e3}
+#status{min-height:24px;margin-top:16px;font-size:13px;line-height:1.6}
+#result{display:none;margin-top:16px;padding:16px;border:1px solid #6f9c81;border-radius:14px;background:#20362e}
+#result.show{display:block}
+#result strong{color:#b8f0c9}
+.small{font-size:12px;color:#cbb6c5}
+</style>
+</head>
+<body>
+<main class="card">
+<h1>Cambiar contraseña ♡</h1>
+<p>Esta herramienta cambia la contraseña de la página principal sin modificar tus recuerdos. El proceso de descifrado y cifrado se realiza únicamente en este navegador.</p>
+<div class="note">No compartas tus contraseñas por chat. La contraseña actual y la nueva no se envían a ningún servidor ni se guardan en esta herramienta.</div>
+<form id="changeForm">
+<label for="oldPassword">Contraseña actual</label>
+<input id="oldPassword" type="password" autocomplete="current-password" required>
+<label for="newPassword">Nueva contraseña</label>
+<input id="newPassword" type="password" autocomplete="new-password" required>
+<label for="confirmPassword">Repite la nueva contraseña</label>
+<input id="confirmPassword" type="password" autocomplete="new-password" required>
+<button id="submit" type="submit">Preparar nueva contraseña</button>
+</form>
+<div id="status" role="status" aria-live="polite"></div>
+<section id="result">
+<strong>¡Cifrado actualizado correctamente!</strong>
+<p>Descarga el archivo y adjúntalo en esta conversación. Con ese archivo actualizaré el acceso de GitHub sin que tengas que compartir ninguna contraseña.</p>
+<a id="download" class="download" download="nueva-clave-cifrada.json">Descargar archivo cifrado</a>
+<p class="small">El archivo contiene únicamente datos cifrados, no contiene la contraseña nueva.</p>
+</section>
+<p class="small"><a href="/cumpleanos-con-acceso/proyecto-anterior/" style="color:#f2b9d1">← Volver a la página principal</a></p>
+</main>
+<script>
+(function(){
+ const form=document.getElementById('changeForm');
+ const button=document.getElementById('submit');
+ const status=document.getElementById('status');
+ const result=document.getElementById('result');
+ const download=document.getElementById('download');
+ const sourceUrl='https://raw.githubusercontent.com/gustavoleonardopintocondori-web/cumpleanos-con-acceso/main/proyecto-anterior/index.html';
+ const iterations=600000;
+ const fromBase64=value=>Uint8Array.from(atob(value),c=>c.charCodeAt(0));
+ const toBase64=bytes=>{
+   let binary='';
+   for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
+   return btoa(binary);
+ };
+ async function derive(password,salt,usages){
+   const raw=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveKey']);
+   return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations,hash:'SHA-256'},raw,{name:'AES-GCM',length:256},false,usages);
+ }
+ form.addEventListener('submit',async event=>{
+   event.preventDefault();result.classList.remove('show');status.textContent='';
+   const oldPassword=document.getElementById('oldPassword').value;
+   const newPassword=document.getElementById('newPassword').value;
+   const confirmPassword=document.getElementById('confirmPassword').value;
+   if(newPassword!==confirmPassword){status.textContent='Las nuevas contraseñas no coinciden.';return}
+   if(newPassword.length<8){status.textContent='La nueva contraseña debe tener al menos 8 caracteres.';return}
+   if(!window.crypto||!crypto.subtle){status.textContent='Abre esta herramienta desde GitHub Pages con HTTPS y vuelve a intentarlo.';return}
+   button.disabled=true;button.textContent='Cifrando…';
+   try{
+     const response=await fetch(sourceUrl+'?v='+Date.now(),{cache:'no-store'});
+     if(!response.ok)throw new Error('No se pudo leer el archivo cifrado de la página principal.');
+     const html=await response.text();
+     const match=html.match(/<script type="application\/json" id="cipher-data">([\s\S]*?)<\/script>/);
+     if(!match)throw new Error('No se encontró el bloque cifrado de la página principal.');
+     const oldPayload=JSON.parse(match[1]);
+     const oldSalt=fromBase64(oldPayload.salt);
+     const oldIv=fromBase64(oldPayload.iv);
+     const oldKey=await derive(oldPassword,oldSalt,['decrypt']);
+     let plaintext;
+     try{
+       plaintext=await crypto.subtle.decrypt({name:'AES-GCM',iv:oldIv},oldKey,fromBase64(oldPayload.data));
+     }catch(e){
+       throw new Error('La contraseña actual no coincide. No se modificó ningún archivo.');
+     }
+     const salt=crypto.getRandomValues(new Uint8Array(16));
+     const iv=crypto.getRandomValues(new Uint8Array(12));
+     const newKey=await derive(newPassword,salt,['encrypt']);
+     const encrypted=await crypto.subtle.encrypt({name:'AES-GCM',iv},newKey,plaintext);
+     const payload={
+       version:1,kdf:'PBKDF2-SHA256',iterations,
+       cipher:'AES-256-GCM',salt:toBase64(salt),iv:toBase64(iv),data:toBase64(new Uint8Array(encrypted))
+     };
+     const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+     const url=URL.createObjectURL(blob);
+     download.href=url;
+     result.classList.add('show');
+     status.textContent='Listo. La página se pudo descifrar y volver a cifrar con la nueva contraseña.';
+     form.reset();
+   }catch(error){
+     status.textContent=error.message||'Ocurrió un error. No se cambió la contraseña.';
+   }finally{
+     button.disabled=false;button.textContent='Preparar nueva contraseña';
+   }
+ });
+})();
+</script>
+</body>
+</html>
