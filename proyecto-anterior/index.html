@@ -54,6 +54,14 @@ video{background:#211628;aspect-ratio:16/9;object-fit:contain}
 footer{padding:22px;text-align:center;color:#987e89;font-size:12px}
 @media(max-width:760px){.hero{grid-template-columns:1fr}.art{min-height:330px}.welcome{padding:28px}.section-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.content-grid{grid-template-columns:1fr}}
 @media(max-width:380px){.section-grid{grid-template-columns:1fr}.topbar{padding:10px 12px}.brand{font-size:13px}.menu summary,.home-link{min-height:38px;padding:8px 11px;font-size:12px}}
+
+.music-dock{position:fixed;z-index:50;left:50%;bottom:16px;transform:translateX(-50%);display:flex;align-items:center;gap:12px;width:min(440px,calc(100% - 24px));padding:10px 12px 10px 16px;border:1px solid #e9cbd5;border-radius:999px;background:#fffdfcf2;box-shadow:0 12px 35px #603c4b24;backdrop-filter:blur(12px)}
+.music-dock[hidden]{display:none}
+.music-note{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:50%;background:#fdeaf0;color:var(--rose);font-size:18px}
+.music-status{flex:1;min-width:0;color:var(--wine);font-size:13px;font-weight:700;line-height:1.35}
+.music-button{flex:0 0 auto;border:0;border-radius:999px;padding:10px 14px;background:linear-gradient(110deg,#b64f70,#d77d99);color:white;font-size:12px;font-weight:800;cursor:pointer}
+.music-button:focus-visible{outline:3px solid #e7aabd;outline-offset:3px}
+@media(max-width:380px){.music-dock{bottom:10px;gap:8px;padding:8px 9px}.music-status{font-size:11px}.music-button{padding:9px 11px;font-size:11px}}
 </style></head><body>
 <header class="topbar"><a class="brand" href="/cumpleanos-con-acceso/proyecto-anterior/">♡ Un recuerdo hecho para ti</a><details class="menu"><summary>Secciones ☰</summary><nav class="menu-list"><a href="/cumpleanos-con-acceso/proyecto-anterior/" target="_blank" rel="noopener">⌂ Inicio</a><a href="/cumpleanos-con-acceso/proyecto-anterior/musica/" target="_blank" rel="noopener">♫ Música</a><a href="/cumpleanos-con-acceso/proyecto-anterior/momento/" target="_blank" rel="noopener">✧ Momento</a><a href="/cumpleanos-con-acceso/proyecto-anterior/nuestro-momento/" target="_blank" rel="noopener">♡ Nuestro momento</a><a href="/cumpleanos-con-acceso/proyecto-anterior/cartas/" target="_blank" rel="noopener">✉ Cartas y mensajes</a></nav></details></header>
 <main class="wrap">
@@ -84,5 +92,68 @@ footer{padding:22px;text-align:center;color:#987e89;font-size:12px}
  <a class="section-card" href="/cumpleanos-con-acceso/proyecto-anterior/cartas/" target="_blank" rel="noopener"><span class="section-icon">✉</span><strong>Cartas y mensajes</strong><span>Un mensaje preparado para ti</span></a>
 </section></main>
 <footer>Hecho con cariño ♡</footer>
-<script>document.addEventListener('click',e=>{document.querySelectorAll('details.menu[open]').forEach(d=>{if(!d.contains(e.target))d.open=false})});</script>
+<audio id="birthdayPlaylist" preload="auto" autoplay src="/cumpleanos-con-acceso/musica/cancion-1.mp3" aria-label="Música de cumpleaños"></audio>
+<div class="music-dock" id="musicDock" aria-live="polite">
+ <span class="music-note" aria-hidden="true">♫</span>
+ <span class="music-status" id="musicStatus">Preparando tu música…</span>
+ <button class="music-button" id="musicToggle" type="button">Activar música</button>
+</div>
+<script>
+const playlist = [
+ "/cumpleanos-con-acceso/musica/cancion-1.mp3",
+ "/cumpleanos-con-acceso/musica/cancion-2.mp3"
+];
+const player = document.getElementById("birthdayPlaylist");
+const statusText = document.getElementById("musicStatus");
+const toggle = document.getElementById("musicToggle");
+let currentTrack = 0;
+let autoplayBlocked = false;
+
+function updatePlayingState() {
+ statusText.textContent = currentTrack === 0 ? "Reproduciendo la primera canción" : "Reproduciendo la segunda canción";
+ toggle.textContent = "Pausar ♫";
+}
+async function startCurrentTrack() {
+ player.src = playlist[currentTrack];
+ try {
+  await player.play();
+  autoplayBlocked = false;
+  updatePlayingState();
+ } catch (error) {
+  autoplayBlocked = true;
+  statusText.textContent = "Toca para comenzar la música";
+  toggle.textContent = "Reproducir ♫";
+ }
+}
+player.addEventListener("ended", () => {
+ if (currentTrack === 0) {
+  currentTrack = 1;
+  startCurrentTrack();
+ } else {
+  statusText.textContent = "Terminó la música ♡";
+  toggle.textContent = "Escuchar otra vez";
+ }
+});
+player.addEventListener("play", updatePlayingState);
+player.addEventListener("pause", () => {
+ if (!player.ended) {
+  statusText.textContent = "Música en pausa";
+  toggle.textContent = "Continuar ♫";
+ }
+});
+toggle.addEventListener("click", async () => {
+ if (player.paused) {
+  if (player.ended) currentTrack = 0;
+  await startCurrentTrack();
+ } else {
+  player.pause();
+ }
+});
+startCurrentTrack();
+document.addEventListener("click", event => {
+ document.querySelectorAll("details.menu[open]").forEach(menu => {
+  if (!menu.contains(event.target)) menu.open = false;
+ });
+});
+</script>
 </body></html>
