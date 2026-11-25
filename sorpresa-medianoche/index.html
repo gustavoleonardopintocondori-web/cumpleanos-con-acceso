@@ -212,7 +212,7 @@
   <audio id="backgroundMusic" preload="none"></audio>
   <script>
     (() => {
-      const accessUser = 'mi cielo';
+      const accessUser = 'micielo';
       const accessPassword = 'mi niña';
       const backgroundMusic = document.getElementById('backgroundMusic');
       const musicToggle = document.getElementById('musicToggle');
@@ -287,7 +287,7 @@
         event.preventDefault();
         const enteredUser = document.getElementById('accessUser').value.trim().toLocaleLowerCase('es');
         const enteredPassword = document.getElementById('accessPassword').value.trim().normalize('NFC');
-        if (enteredUser === accessUser && enteredPassword === accessPassword.normalize('NFC')) {
+        if (enteredUser.replace(/\s+/g, '') === accessUser && enteredPassword.normalize('NFC') === accessPassword.normalize('NFC')) {
           accessError.hidden = true;
           showPage();
           startBackgroundMusic();
