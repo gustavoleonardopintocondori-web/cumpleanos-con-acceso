@@ -111,7 +111,7 @@
       event.preventDefault();error.textContent='';
       const username=document.getElementById('username').value.trim().toLowerCase();
       const password=document.getElementById('password').value;
-      const normalizePassword=value=>(value||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().trim();
+      const normalizePassword=value=>(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
       const suppliedPassword=normalizePassword(password);
       if(username!=='mi cielo'||suppliedPassword!=='feliz cumpleanos mi nina'){error.textContent='Usuario o contraseña incorrectos. Escribe la contraseña anterior: Feliz cumpleaños mi niña.';return}
       button.disabled=true;button.textContent='Preparando tu sorpresa…';
