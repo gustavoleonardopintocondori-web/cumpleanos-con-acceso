@@ -92,7 +92,7 @@
       <div class="access-hint">Tu usuario es <strong>mi cielo</strong> <span aria-hidden="true">♡</span></div>
       <form id="accessForm">
         <div class="field"><label for="username">Usuario</label><input id="username" name="username" autocomplete="username" value="mi cielo" required></div>
-        <div class="field"><label for="password">Contraseña</label><input id="password" name="password" type="password" autocomplete="current-password" placeholder="Escribe la contraseña" required></div>
+        <div class="field"><label for="password">Contraseña</label><input id="password" name="password" type="password" autocomplete="current-password" placeholder="Nuestro futuro" required></div>
         <button class="enter" id="enterButton" type="submit">Entrar a mi sorpresa&nbsp; ♡</button>
         <p class="error" id="error" role="status" aria-live="polite"></p>
       </form>
@@ -111,7 +111,7 @@
       event.preventDefault();error.textContent='';
       const username=document.getElementById('username').value.trim().toLowerCase();
       const password=document.getElementById('password').value;
-      const normalizePassword=value=>(value||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().trim();
+      const normalizePassword=value=>(value||'').normalize('NFD').replace(/ñ/g,'n').toLowerCase().trim();
       const suppliedPassword=normalizePassword(password);
       if(username!=='mi cielo'||!['nuestro futuro','feliz cumpleanos mi nina'].includes(suppliedPassword)){error.textContent='Usuario o contraseña incorrectos.';return}
       button.disabled=true;button.textContent='Preparando tu sorpresa…';
