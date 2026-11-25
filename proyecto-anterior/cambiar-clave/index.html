@@ -26,16 +26,16 @@ button:disabled{opacity:.6;cursor:wait}
 <body>
 <main class="card">
 <h1>Cambiar contraseña ♡</h1>
-<p>Esta herramienta cambia la contraseña de la página principal sin modificar tus recuerdos. El proceso de descifrado y cifrado se realiza únicamente en este navegador.</p>
+<p>La nueva contraseña ya está preparada como <strong>Nuestro futuro</strong>. Solo escribe la contraseña que usabas antes para abrir la página. El cambio se prepara en este navegador sin enviar tu contraseña a ningún servidor.</p>
 <div class="note">No compartas tus contraseñas por chat. La contraseña actual y la nueva no se envían a ningún servidor ni se guardan en esta herramienta.</div>
 <form id="changeForm">
 <label for="oldPassword">Contraseña actual</label>
 <input id="oldPassword" type="password" autocomplete="current-password" required>
 <label for="newPassword">Nueva contraseña</label>
-<input id="newPassword" type="password" autocomplete="new-password" required>
+<input id="newPassword" type="password" autocomplete="new-password" value="Nuestro futuro" required>
 <label for="confirmPassword">Repite la nueva contraseña</label>
-<input id="confirmPassword" type="password" autocomplete="new-password" required>
-<button id="submit" type="submit">Preparar nueva contraseña</button>
+<input id="confirmPassword" type="password" autocomplete="new-password" value="Nuestro futuro" required>
+<button id="submit" type="submit">Cambiar a «Nuestro futuro»</button>
 </form>
 <div id="status" role="status" aria-live="polite"></div>
 <section id="result">
